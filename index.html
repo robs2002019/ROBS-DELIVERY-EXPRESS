@@ -1,12 +1,34 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <title>ROBS DELIVERY EXPRESS</title>
-</head>
+HTML
 <body>
+  <button onclick="login()">Login con Google</button>
 
-  <h1>🚀 ROBS DELIVERY EXPRESS</h1>
-  <p>App en construcción...</p>
+<script>
+function login() {
+  const provider = new firebase.auth.GoogleAuthProvider();
+  firebase.auth().signInWithPopup(provider)
+    .then(() => alert("Login exitoso"));
+}
+</script>
+<script type="module">
+  // Import the functions you need from the SDKs you need
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-app.js";
+  import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-analytics.js";
+  // TODO: Add SDKs for Firebase products that you want to use
+  // https://firebase.google.com/docs/web/setup#available-libraries
 
-</body>
-</html>
+  // Your web app's Firebase configuration
+  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+  const firebaseConfig = {
+    apiKey: "AIzaSyCo8_Qzp_Up72063TbNqDPWFTPqZxvHRcE",
+    authDomain: "robs-delivery-express-9fd38.firebaseapp.com",
+    projectId: "robs-delivery-express-9fd38",
+    storageBucket: "robs-delivery-express-9fd38.firebasestorage.app",
+    messagingSenderId: "932715527848",
+    appId: "1:932715527848:web:ecdfa23d7cc9c0ca6f4c9d",
+    measurementId: "G-W5K5JNTXJ1"
+  };
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const analytics = getAnalytics(app);
+</script>
