@@ -32,3 +32,75 @@ function login() {
   const app = initializeApp(firebaseConfig);
   const analytics = getAnalytics(app);
 </script>
+<h2>Registrar Restaurante</h2>
+
+<input id="restNombre" placeholder="Nombre del restaurante">
+<input id="restCategoria" placeholder="Categoría (pizza, tacos, etc)">
+
+<button onclick="guardarRestaurante()">Guardar Restaurante</button>
+
+<script>
+function guardarRestaurante() {
+  db.collection("restaurantes").add({
+    nombre: document.getElementById("restNombre").value,
+    categoria: document.getElementById("restCategoria").value
+  });
+
+  alert("Restaurante guardado");
+}
+</script>
+<h2>Agregar Producto</h2>
+
+<input id="productoNombre" placeholder="Nombre del producto">
+<input id="productoPrecio" placeholder="Precio">
+<input id="productoRest" placeholder="ID del restaurante">
+
+<button onclick="guardarProducto()">Guardar Producto</button>
+
+<script>
+function guardarProducto() {
+  db.collection("menu").add({
+    nombre: document.getElementById("productoNombre").value,
+    precio: parseFloat(document.getElementById("productoPrecio").value),
+    restauranteId: document.getElementById("productoRest").value
+  });
+
+  alert("Producto agregado");
+}
+</script>
+<h2>Restaurantes</h2>
+<div id="listaRest"></div>
+
+<script>
+db.collection("restaurantes").onSnapshot((snapshot) => {
+  let html = "";
+
+  snapshot.forEach(doc => {
+    let r = doc.data();
+
+    html += `
+      <div>
+        <h3>${r.nombre}</h3>
+        <p>${r.categoria}</p>
+      </div>
+    `;
+  });
+
+  document.getElementById("listaRest").innerHTML = html;
+});
+</script>
+<script>
+function pedir(id, precio) {
+  const user = firebase.auth().currentUser;
+
+  db.collection("pedidos").add({
+    productoId: id,
+    precio: precio,
+    usuario: user ? user.email : "anonimo",
+    estado: "pendiente",
+    fecha: new Date()
+  });
+
+  alert("Pedido enviado 🚀");
+}
+</script>
