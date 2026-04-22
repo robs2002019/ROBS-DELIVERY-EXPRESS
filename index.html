@@ -85,17 +85,134 @@
         <div id="listaRest"></div>
     </div>
 
-    <div id="admin-sec" class="content-section">
-        <h2 style="color:#f39c12;">Control de Publicidad</h2>
-        <p>Solo personal autorizado.</p>
+ <div id="admin-sec" class="content-section">
+    <h2 style="color:#f39c12;">🚀 Super Admin Panel</h2>
+    
+    <div style="display: flex; gap: 5px; margin-bottom: 20px;">
+        <button onclick="tabAdmin('ad-media')" style="background:#444; font-size:12px; padding:8px;">Media/Ads</button>
+        <button onclick="tabAdmin('ad-users')" style="background:#444; font-size:12px; padding:8px;">Usuarios/Locales</button>
+        <button onclick="tabAdmin('ad-archive')" style="background:#444; font-size:12px; padding:8px;">Archivo</button>
+    </div>
+
+    <div id="ad-media" class="admin-tab active-tab">
+        <h3>Publicidad Activa</h3>
         <label>Video Promocional (MP4):</label>
         <input type="file" id="fileVideo" accept="video/mp4">
-        <button class="btn-admin" onclick="subirPublicidad('video', 'fileVideo')">Cambiar Video</button>
-        <hr>
-        <label>Banners:</label>
+        <button class="btn-admin" onclick="subirPublicidad('video', 'fileVideo')">🚀 Publicar Video</button>
+        
+        <label>Banner Interactivo (Link de imagen):</label>
         <input type="file" id="fileBanner1" accept="image/*">
-        <button class="btn-admin" onclick="subirPublicidad('banner1', 'fileBanner1')">Cambiar Banner 1</button>
+        <button class="btn-admin" onclick="subirPublicidad('banner1', 'fileBanner1')">🖼️ Subir Banner</button>
+        
+        <div style="margin-top:20px; padding:10px; background:#eee; border-radius:8px;">
+            <p><b>Acciones Globales:</b></p>
+            <button onclick="eliminarPublicidad('video')" style="background:#e74c3c; width:auto; margin-right:5px;">Borrar Video</button>
+            <button onclick="archivarVideoActual()" style="background:#34495e; width:auto;">Archivar Actual</button>
+        </div>
     </div>
+
+    <div id="ad-users" class="admin-tab" style="display:none;">
+        <h3>Control de Restaurantes</h3>
+        <div id="adminListaRestaurantes">
+            </div>
+    </div>
+
+    <div id="ad-archive" class="admin-tab" style="display:none;">
+        <h3>Biblioteca de Videos Archivados</h3>
+        <div id="bibliotecaArchivos" style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+            </div>
+    </div>
+</div>
+
+<style>
+    .admin-tab { animation: fadeIn 0.3s; }
+    .status-active { color: #27ae60; font-weight: bold; }
+    .status-inactive { color: #e74c3c; font-weight: bold; }
+    .video-card-small { background: #f9f9f9; padding: 5px; border-radius: 5px; font-size: 11px; }
+</style>
+
+<script type="module">
+    // ... (Mantener importaciones de Firebase anteriores) ...
+    import { deleteDoc, getDocs, updateDoc } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-firestore.js";
+    import { deleteObject } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-storage.js";
+
+    // --- NAVEGACIÓN INTERNA ADMIN ---
+    window.tabAdmin = (tabId) => {
+        document.querySelectorAll('.admin-tab').forEach(t => t.style.display = 'none');
+        document.getElementById(tabId).style.display = 'block';
+        if(tabId === 'ad-users') cargarTodosLosLocales();
+        if(tabId === 'ad-archive') cargarArchivoVideos();
+    };
+
+    // --- GESTIÓN DE USUARIOS / LOCALES ---
+    async function cargarTodosLosLocales() {
+        const querySnapshot = await getDocs(collection(db, "restaurantes"));
+        let html = "";
+        querySnapshot.forEach((docSnap) => {
+            const res = docSnap.data();
+            const estaActivo = res.estado !== "desactivado";
+            html += `
+                <div class="rest-card">
+                    <div>
+                        <b>${res.nombre}</b><br>
+                        <small>Estado: <span class="${estaActivo ? 'status-active' : 'status-inactive'}">${estaActivo ? 'ACTIVO' : 'SUSPENDIDO'}</span></small>
+                    </div>
+                    <button onclick="cambiarEstadoLocal('${docSnap.id}', ${estaActivo})" 
+                            style="background: ${estaActivo ? '#e74c3c' : '#27ae60'}; width:auto; padding:5px 10px;">
+                        ${estaActivo ? 'Desactivar' : 'Activar'}
+                    </button>
+                </div>`;
+        });
+        document.getElementById('adminListaRestaurantes').innerHTML = html;
+    }
+
+    window.cambiarEstadoLocal = async (id, actualmenteActivo) => {
+        const nuevoEstado = actualmenteActivo ? "desactivado" : "activo";
+        await updateDoc(doc(db, "restaurantes", id), { estado: nuevoEstado });
+        alert("Estado del local actualizado.");
+        cargarTodosLosLocales();
+    };
+
+    // --- ARCHIVAR VIDEOS (Guardar sin borrar el anterior) ---
+    window.archivarVideoActual = async () => {
+        const videoActual = document.getElementById('videoSrc').src;
+        if(!videoActual || videoActual.includes('placeholder')) return alert("No hay video para archivar");
+        
+        await addDoc(collection(db, "archivo_videos"), {
+            url: videoActual,
+            fecha: new Date(),
+            nombre: "Anuncio_" + Date.now()
+        });
+        alert("Video movido a la biblioteca de archivo.");
+    };
+
+    async function cargarArchivoVideos() {
+        const snap = await getDocs(collection(db, "archivo_videos"));
+        let html = "";
+        snap.forEach(d => {
+            html += `
+                <div class="video-card-small">
+                    <video src="${d.data().url}" style="width:100%"></video>
+                    <button onclick="reutilizarVideo('${d.data().url}')" style="background:#3498db; font-size:10px;">Usar</button>
+                    <button onclick="eliminarArchivo('${d.id}')" style="background:red; font-size:10px;">X</button>
+                </div>`;
+        });
+        document.getElementById('bibliotecaArchivos').innerHTML = html || "Archivo vacío.";
+    }
+
+    window.reutilizarVideo = async (url) => {
+        await setDoc(doc(db, "publicidad", "video"), { url });
+        alert("Video del archivo publicado.");
+    };
+
+    // --- ELIMINAR PUBLICIDAD ---
+    window.eliminarPublicidad = async (tipo) => {
+        if(!confirm("¿Seguro que quieres eliminar este anuncio?")) return;
+        await deleteDoc(doc(db, "publicidad", tipo));
+        alert("Publicidad eliminada.");
+        location.reload();
+    };
+</script>   
 
 </div>
 
