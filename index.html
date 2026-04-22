@@ -1,106 +1,126 @@
-HTML
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Robs Delivery Express 🚀</title>
+    <style>
+        body { font-family: sans-serif; padding: 20px; line-height: 1.6; }
+        .card { border: 1px solid #ddd; padding: 15px; margin: 10px 0; border-radius: 8px; background: #f9f9f9; }
+        input, select, textarea { display: block; width: 100%; max-width: 400px; margin-bottom: 10px; padding: 8px; }
+        button { padding: 10px 15px; cursor: pointer; background: #27ae60; color: white; border: none; border-radius: 4px; }
+        .btn-google { background: #4285F4; }
+    </style>
+</head>
 <body>
-  <button onclick="login()">Login con Google</button>
 
-<script>
-function login() {
-  const provider = new firebase.auth.GoogleAuthProvider();
-  firebase.auth().signInWithPopup(provider)
-    .then(() => alert("Login exitoso"));
-}
-</script>
-<script type="module">
-  // Import the functions you need from the SDKs you need
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-app.js";
-  import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-analytics.js";
-  // TODO: Add SDKs for Firebase products that you want to use
-  // https://firebase.google.com/docs/web/setup#available-libraries
+    <h1>Robs Delivery Express</h1>
+    <button id="btnLogin" class="btn-google">Login con Google</button>
+    <p id="userStatus">Estado: No conectado</p>
 
-  // Your web app's Firebase configuration
-  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
-  const firebaseConfig = {
-    apiKey: "AIzaSyCo8_Qzp_Up72063TbNqDPWFTPqZxvHRcE",
-    authDomain: "robs-delivery-express-9fd38.firebaseapp.com",
-    projectId: "robs-delivery-express-9fd38",
-    storageBucket: "robs-delivery-express-9fd38.firebasestorage.app",
-    messagingSenderId: "932715527848",
-    appId: "1:932715527848:web:ecdfa23d7cc9c0ca6f4c9d",
-    measurementId: "G-W5K5JNTXJ1"
-  };
+    <hr>
 
-  // Initialize Firebase
-  const app = initializeApp(firebaseConfig);
-  const analytics = getAnalytics(app);
-</script>
-<h2>Registrar Restaurante</h2>
+    <h2>Registrar Restaurante</h2>
+    <input id="restNombre" placeholder="Nombre del restaurante">
+    <input id="restNacionalidad" placeholder="Nacionalidad (ej. México, España)">
+    <input id="restProvincia" placeholder="Provincia o Departamento">
+    <input id="restTelefono" placeholder="Teléfono de contacto">
+    <input id="restWeb" placeholder="Sitio Web o Redes Sociales">
+    <button id="btnGuardarRest">Guardar Restaurante</button>
 
-<input id="restNombre" placeholder="Nombre del restaurante">
-<input id="restCategoria" placeholder="Categoría (pizza, tacos, etc)">
+    <hr>
 
-<button onclick="guardarRestaurante()">Guardar Restaurante</button>
+    <h2>Agregar Producto</h2>
+    <input id="prodNombre" placeholder="Nombre del producto">
+    <input id="prodPrecio" type="number" placeholder="Precio Unitario">
+    <textarea id="prodCaract" placeholder="Características del producto"></textarea>
+    <input id="prodPago" placeholder="Link de pago (Stripe/PayPal)">
+    <input id="prodRestID" placeholder="ID del Restaurante (se obtiene de la lista)">
+    <button id="btnGuardarProd">Guardar Producto</button>
 
-<script>
-function guardarRestaurante() {
-  db.collection("restaurantes").add({
-    nombre: document.getElementById("restNombre").value,
-    categoria: document.getElementById("restCategoria").value
-  });
+    <hr>
 
-  alert("Restaurante guardado");
-}
-</script>
-<h2>Agregar Producto</h2>
+    <h2>Restaurantes Activos</h2>
+    <div id="listaRest"></div>
 
-<input id="productoNombre" placeholder="Nombre del producto">
-<input id="productoPrecio" placeholder="Precio">
-<input id="productoRest" placeholder="ID del restaurante">
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-app.js";
+        import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-auth.js";
+        import { getFirestore, collection, addDoc, onSnapshot, query, doc, updateDoc } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-firestore.js";
 
-<button onclick="guardarProducto()">Guardar Producto</button>
+        const firebaseConfig = {
+            apiKey: "AIzaSyCo8_Qzp_Up72063TbNqDPWFTPqZxvHRcE",
+            authDomain: "robs-delivery-express-9fd38.firebaseapp.com",
+            projectId: "robs-delivery-express-9fd38",
+            storageBucket: "robs-delivery-express-9fd38.firebasestorage.app",
+            messagingSenderId: "932715527848",
+            appId: "1:932715527848:web:ecdfa23d7cc9c0ca6f4c9d"
+        };
 
-<script>
-function guardarProducto() {
-  db.collection("menu").add({
-    nombre: document.getElementById("productoNombre").value,
-    precio: parseFloat(document.getElementById("productoPrecio").value),
-    restauranteId: document.getElementById("productoRest").value
-  });
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        const provider = new GoogleAuthProvider();
 
-  alert("Producto agregado");
-}
-</script>
-<h2>Restaurantes</h2>
-<div id="listaRest"></div>
+        // --- AUTENTICACIÓN ---
+        document.getElementById('btnLogin').onclick = async () => {
+            try {
+                await signInWithPopup(auth, provider);
+                alert("¡Login exitoso!");
+            } catch (error) { console.error(error); }
+        };
 
-<script>
-db.collection("restaurantes").onSnapshot((snapshot) => {
-  let html = "";
+        onAuthStateChanged(auth, (user) => {
+            const status = document.getElementById('userStatus');
+            status.innerText = user ? `Conectado como: ${user.email}` : "Estado: No conectado";
+        });
 
-  snapshot.forEach(doc => {
-    let r = doc.data();
+        // --- GUARDAR RESTAURANTE ---
+        document.getElementById('btnGuardarRest').onclick = async () => {
+            const user = auth.currentUser;
+            if (!user) return alert("Debes iniciar sesión");
 
-    html += `
-      <div>
-        <h3>${r.nombre}</h3>
-        <p>${r.categoria}</p>
-      </div>
-    `;
-  });
+            await addDoc(collection(db, "restaurantes"), {
+                nombre: document.getElementById("restNombre").value,
+                nacionalidad: document.getElementById("restNacionalidad").value,
+                provincia: document.getElementById("restProvincia").value,
+                telefono: document.getElementById("restTelefono").value,
+                web: document.getElementById("restWeb").value,
+                duenoId: user.uid,
+                estado: "activo", // Para el panel de admin
+                pagoAlDia: false  // Para controlar la suscripción mensual
+            });
+            alert("Restaurante guardado con éxito");
+        };
 
-  document.getElementById("listaRest").innerHTML = html;
-});
-</script>
-<script>
-function pedir(id, precio) {
-  const user = firebase.auth().currentUser;
+        // --- GUARDAR PRODUCTO ---
+        document.getElementById('btnGuardarProd').onclick = async () => {
+            await addDoc(collection(db, "menu"), {
+                nombre: document.getElementById("prodNombre").value,
+                precio: parseFloat(document.getElementById("prodPrecio").value),
+                caracteristicas: document.getElementById("prodCaract").value,
+                linkPago: document.getElementById("prodPago").value,
+                restauranteId: document.getElementById("prodRestID").value
+            });
+            alert("Producto agregado al menú");
+        };
 
-  db.collection("pedidos").add({
-    productoId: id,
-    precio: precio,
-    usuario: user ? user.email : "anonimo",
-    estado: "pendiente",
-    fecha: new Date()
-  });
-
-  alert("Pedido enviado 🚀");
-}
-</script>
+        // --- LISTAR RESTAURANTES EN TIEMPO REAL ---
+        onSnapshot(collection(db, "restaurantes"), (snapshot) => {
+            let html = "";
+            snapshot.forEach(doc => {
+                let r = doc.data();
+                html += `
+                    <div class="card">
+                        <h3>${r.nombre} (ID: ${doc.id})</h3>
+                        <p>📍 ${r.provincia}, ${r.nacionalidad}</p>
+                        <p>📞 ${r.telefono} | 🌐 ${r.web}</p>
+                        <p>Estado: <b>${r.estado}</b></p>
+                    </div>
+                `;
+            });
+            document.getElementById("listaRest").innerHTML = html;
+        });
+    </script>
+</body>
+</html>
