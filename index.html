@@ -5,138 +5,194 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Robs Delivery Express 🚀</title>
     <style>
-        body { font-family: 'Segoe UI', sans-serif; padding: 20px; background-color: #f0f2f5; color: #333; }
-        .container { max-width: 900px; margin: auto; background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
-        
-        /* Estilos Publicidad */
-        .ads-section { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 30px; }
-        .video-ad-container { grid-column: span 2; background: #000; border-radius: 8px; overflow: hidden; height: 300px; position: relative; }
+        /* --- ESTILOS GENERALES --- */
+        body { font-family: 'Segoe UI', sans-serif; margin: 0; background-color: #f0f2f5; color: #333; }
+        .section { max-width: 900px; margin: 20px auto; background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+        h2 { color: #27ae60; border-bottom: 2px solid #eee; padding-bottom: 10px; }
+        input, textarea { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; }
+        button { padding: 12px; cursor: pointer; background: #27ae60; color: white; border: none; border-radius: 6px; font-weight: bold; width: 100%; transition: 0.3s; }
+        button:hover { background: #219150; }
+
+        /* --- SECCIÓN 1: PUBLICIDAD --- */
+        .ads-container { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
+        .video-box { grid-column: span 2; background: #000; border-radius: 8px; height: 300px; overflow: hidden; }
         video { width: 100%; height: 100%; object-fit: cover; }
-        .banner-ad { width: 100%; height: 120px; background: #ddd; border-radius: 8px; object-fit: cover; border: 1px solid #ccc; }
-        
-        /* Formulario y Botones */
-        h2 { border-left: 5px solid #27ae60; padding-left: 10px; color: #27ae60; }
-        input, textarea { display: block; width: 100%; box-sizing: border-box; margin-bottom: 10px; padding: 10px; border: 1px solid #ccc; border-radius: 6px; }
-        button { padding: 12px; cursor: pointer; background: #27ae60; color: white; border: none; border-radius: 6px; font-weight: bold; width: 100%; margin-bottom: 10px; }
-        .btn-delete { background: #e74c3c; width: auto; padding: 5px 10px; font-size: 12px; }
-        .admin-panel { background: #fff3cd; padding: 15px; border-radius: 8px; border: 1px solid #ffeeba; margin-top: 40px; }
-        .loading { display: none; color: #f39c12; font-weight: bold; text-align: center; }
+        .banner-box img { width: 100%; height: 120px; object-fit: cover; border-radius: 8px; background: #ddd; }
+
+        /* --- SECCIÓN 4: PANEL ADMIN (OCULTO POR DEFECTO) --- */
+        #admin-panel { background: #fff3cd; border: 1px solid #ffeeba; display: none; }
+        .admin-btn { background: #f39c12; margin-top: 5px; }
+
+        /* --- UTILIDADES --- */
+        .status-bar { text-align: center; padding: 10px; font-weight: bold; }
+        .card { border: 1px solid #eee; padding: 15px; margin: 10px 0; border-radius: 8px; }
+        .id-badge { background: #e8f5e9; padding: 10px; border: 1px dashed #27ae60; margin: 10px 0; text-align: center; font-weight: bold; }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <h1>Robs Delivery Express 🚀</h1>
-
-    <div class="ads-section">
-        <div class="video-ad-container" id="videoContainer">
-            <video id="reproductorAds" controls autoplay muted loop>
-                <source src="" id="videoSrc" type="video/mp4">
-                Tu navegador no soporta video.
-            </video>
+    <div class="section">
+        <div class="ads-container">
+            <div class="video-box">
+                <video id="reproductorAds" autoplay muted loop playsinline>
+                    <source src="" id="videoSrc">
+                </video>
+            </div>
+            <div class="banner-box"><img id="banner1" src=""></div>
+            <div class="banner-box"><img id="banner2" src=""></div>
         </div>
-        <img id="banner1" class="banner-ad" src="https://via.placeholder.com/400x120?text=Publicidad+1" alt="Banner 1">
-        <img id="banner2" class="banner-ad" src="https://via.placeholder.com/400x120?text=Publicidad+2" alt="Banner 2">
     </div>
 
-    <button id="btnLogin" style="background: #4285F4;">Login con Google</button>
-    <p id="userStatus" style="text-align:center;">No conectado</p>
+    <div class="section" style="text-align: center;">
+        <button id="btnLogin" style="background: #4285F4; width: auto;">Entrar con Google</button>
+        <div id="userStatus" class="status-bar">Estado: No conectado</div>
+    </div>
 
-    <hr>
-
-    <div class="admin-panel" id="panelAdminPublicidad">
-        <h2>📺 Panel de Publicidad (Solo Admin)</h2>
-        <p>Sube los archivos para cambiar los anuncios de la plataforma.</p>
-        
-        <label><b>Video Publicitario (MP4):</b></label>
+    <div id="admin-panel" class="section">
+        <h2>📺 Panel de Control: Publicidad</h2>
+        <label>Subir Video Publicitario:</label>
         <input type="file" id="fileVideo" accept="video/mp4">
-        <button onclick="subirPublicidad('video', 'fileVideo')">Actualizar Video</button>
-
-        <label><b>Banner 1 (Imagen):</b></label>
-        <input type="file" id="fileBanner1" accept="image/*">
-        <button onclick="subirPublicidad('banner1', 'fileBanner1')">Actualizar Banner 1</button>
-
-        <label><b>Banner 2 (Imagen):</b></label>
-        <input type="file" id="fileBanner2" accept="image/*">
-        <button onclick="subirPublicidad('banner2', 'fileBanner2')">Actualizar Banner 2</button>
+        <button class="admin-btn" onclick="subirPublicidad('video', 'fileVideo')">Actualizar Video</button>
         
-        <div id="loadingPub" class="loading">Procesando archivo... por favor espera.</div>
+        <label>Subir Banner 1:</label>
+        <input type="file" id="fileBanner1" accept="image/*">
+        <button class="admin-btn" onclick="subirPublicidad('banner1', 'fileBanner1')">Actualizar Banner 1</button>
+        
+        <label>Subir Banner 2:</label>
+        <input type="file" id="fileBanner2" accept="image/*">
+        <button class="admin-btn" onclick="subirPublicidad('banner2', 'fileBanner2')">Actualizar Banner 2</button>
     </div>
 
-    <hr>
+    <div id="owner-section" class="section">
+        <h2>🏪 Gestión de Restaurante</h2>
+        <input id="restNombre" placeholder="Nombre del Local">
+        <input id="restProvincia" placeholder="Provincia">
+        <button id="btnGuardarRest">Registrar Restaurante</button>
 
-    <h2>Registrar Restaurante</h2>
-    <input id="restNombre" placeholder="Nombre del restaurante">
-    <button id="btnGuardarRest">Guardar Restaurante</button>
+        <hr>
 
-    <h2>Mis Restaurantes</h2>
-    <div id="listaRest"></div>
-</div>
+        <h2>🍴 Agregar al Menú</h2>
+        <div id="statusSeleccion" class="id-badge">Selecciona un restaurante abajo</div>
+        <input type="hidden" id="prodRestID">
+        
+        <input id="prodNombre" placeholder="Nombre del platillo">
+        <input id="prodPrecio" type="number" placeholder="Precio ($)">
+        <input type="file" id="prodFoto" accept="image/*" capture="environment">
+        <button id="btnGuardarProd">Subir Producto</button>
 
-<script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-app.js";
-    import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-auth.js";
-    import { getFirestore, collection, addDoc, onSnapshot, doc, setDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-firestore.js";
-    import { getStorage, ref, uploadBytes, getDownloadURL, deleteObject } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-storage.js";
+        <h3>Mis Locales</h3>
+        <div id="listaRest"></div>
+    </div>
 
-    const firebaseConfig = {
-        apiKey: "AIzaSyCo8_Qzp_Up72063TbNqDPWFTPqZxvHRcE",
-        authDomain: "robs-delivery-express-9fd38.firebaseapp.com",
-        projectId: "robs-delivery-express-9fd38",
-        storageBucket: "robs-delivery-express-9fd38.firebasestorage.app",
-        messagingSenderId: "932715527848",
-        appId: "1:932715527848:web:ecdfa23d7cc9c0ca6f4c9d"
-    };
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-app.js";
+        import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-auth.js";
+        import { getFirestore, collection, addDoc, onSnapshot, doc, setDoc, query, where } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-firestore.js";
+        import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-storage.js";
 
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
-    const storage = getStorage(app);
-    const provider = new GoogleAuthProvider();
+        const firebaseConfig = {
+            apiKey: "AIzaSyCo8_Qzp_Up72063TbNqDPWFTPqZxvHRcE",
+            authDomain: "robs-delivery-express-9fd38.firebaseapp.com",
+            projectId: "robs-delivery-express-9fd38",
+            storageBucket: "robs-delivery-express-9fd38.firebasestorage.app",
+            messagingSenderId: "932715527848",
+            appId: "1:932715527848:web:ecdfa23d7cc9c0ca6f4c9d"
+        };
 
-    // --- LOGIN ---
-    document.getElementById('btnLogin').onclick = () => signInWithPopup(auth, provider);
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        const storage = getStorage(app);
+        const provider = new GoogleAuthProvider();
 
-    // --- CARGAR PUBLICIDAD EN TIEMPO REAL ---
-    onSnapshot(collection(db, "publicidad"), (snapshot) => {
-        snapshot.forEach((doc) => {
-            const data = doc.data();
-            if (doc.id === "video") {
-                document.getElementById('videoSrc').src = data.url;
-                document.getElementById('reproductorAds').load();
-            }
-            if (doc.id === "banner1") document.getElementById('banner1').src = data.url;
-            if (doc.id === "banner2") document.getElementById('banner2').src = data.url;
-        });
-    });
+        // --- LÓGICA DE ROLES Y LOGIN ---
+        const ADMIN_EMAIL = "tu-correo@gmail.com"; // CAMBIA ESTO POR TU CORREO
 
-    // --- SUBIR PUBLICIDAD (Función Global) ---
-    window.subirPublicidad = async (tipo, inputId) => {
-        const file = document.getElementById(inputId).files[0];
-        const loading = document.getElementById('loadingPub');
-        if (!file) return alert("Selecciona un archivo primero");
+        document.getElementById('btnLogin').onclick = () => signInWithPopup(auth, provider);
 
-        try {
-            loading.style.display = "block";
-            // 1. Subir a Storage (Sobrescribe el anterior para ahorrar espacio)
-            const storageRef = ref(storage, `publicidad/${tipo}`);
-            await uploadBytes(storageRef, file);
-            const url = await getDownloadURL(storageRef);
-
-            // 2. Guardar URL en Firestore
-            await setDoc(doc(db, "publicidad", tipo), { url: url, fecha: new Date() });
+        onAuthStateChanged(auth, (user) => {
+            const status = document.getElementById('userStatus');
+            const adminPanel = document.getElementById('admin-panel');
             
-            alert(`¡${tipo} actualizado con éxito!`);
-        } catch (e) {
-            console.error(e);
-            alert("Error al subir");
-        } finally {
-            loading.style.display = "none";
+            if (user) {
+                status.innerText = `Conectado: ${user.email}`;
+                // Si eres tú, se muestra el panel de admin
+                if (user.email === ADMIN_EMAIL) adminPanel.style.display = "block";
+                cargarMisRestaurantes(user.uid);
+            } else {
+                status.innerText = "No conectado";
+                adminPanel.style.display = "none";
+            }
+        });
+
+        // --- PUBLICIDAD EN TIEMPO REAL ---
+        onSnapshot(collection(db, "publicidad"), (snap) => {
+            snap.forEach(d => {
+                const url = d.data().url;
+                if (d.id === "video") { document.getElementById('videoSrc').src = url; document.getElementById('reproductorAds').load(); }
+                if (d.id === "banner1") document.getElementById('banner1').src = url;
+                if (d.id === "banner2") document.getElementById('banner2').src = url;
+            });
+        });
+
+        // --- FUNCIONES GLOBALES (SUBIDAS) ---
+        window.subirPublicidad = async (tipo, inputId) => {
+            const file = document.getElementById(inputId).files[0];
+            if (!file) return alert("Selecciona un archivo");
+            const sRef = ref(storage, `publicidad/${tipo}`);
+            await uploadBytes(sRef, file);
+            const url = await getDownloadURL(sRef);
+            await setDoc(doc(db, "publicidad", tipo), { url });
+            alert("Publicidad actualizada");
+        };
+
+        window.seleccionarRestaurante = (id, nombre) => {
+            document.getElementById("prodRestID").value = id;
+            document.getElementById("statusSeleccion").innerText = "Editando: " + nombre;
+        };
+
+        // --- GESTIÓN DE RESTAURANTES ---
+        document.getElementById('btnGuardarRest').onclick = async () => {
+            const user = auth.currentUser;
+            const docRef = await addDoc(collection(db, "restaurantes"), {
+                nombre: document.getElementById("restNombre").value,
+                provincia: document.getElementById("restProvincia").value,
+                duenoId: user.uid
+            });
+            seleccionarRestaurante(docRef.id, document.getElementById("restNombre").value);
+        };
+
+        document.getElementById('btnGuardarProd').onclick = async () => {
+            const file = document.getElementById("prodFoto").files[0];
+            const restId = document.getElementById("prodRestID").value;
+            if (!file || !restId) return alert("Falta foto o seleccionar restaurante");
+            
+            const sRef = ref(storage, `menu/${Date.now()}`);
+            await uploadBytes(sRef, file);
+            const url = await getDownloadURL(sRef);
+
+            await addDoc(collection(db, "menu"), {
+                nombre: document.getElementById("prodNombre").value,
+                precio: document.getElementById("prodPrecio").value,
+                fotoUrl: url,
+                restauranteId: restId
+            });
+            alert("Producto subido");
+        };
+
+        function cargarMisRestaurantes(uid) {
+            const q = query(collection(db, "restaurantes"), where("duenoId", "==", uid));
+            onSnapshot(q, (snap) => {
+                let h = "";
+                snap.forEach(d => {
+                    h += `<div class="card">
+                        <b>${d.data().nombre}</b><br>
+                        <button onclick="seleccionarRestaurante('${d.id}', '${d.data().nombre}')" style="width:auto; padding:5px; font-size:12px;">Gestionar</button>
+                    </div>`;
+                });
+                document.getElementById("listaRest").innerHTML = h;
+            });
         }
-    };
-
-    // (Lógica de restaurantes omitida por brevedad, se mantiene igual a la anterior)
-</script>
-
+    </script>
 </body>
 </html>
