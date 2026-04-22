@@ -5,122 +5,175 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Robs Delivery Express 🚀</title>
     <style>
-        body { font-family: sans-serif; padding: 20px; line-height: 1.6; }
-        .card { border: 1px solid #ddd; padding: 15px; margin: 10px 0; border-radius: 8px; background: #f9f9f9; }
-        input, select, textarea { display: block; width: 100%; max-width: 400px; margin-bottom: 10px; padding: 8px; }
-        button { padding: 10px 15px; cursor: pointer; background: #27ae60; color: white; border: none; border-radius: 4px; }
-        .btn-google { background: #4285F4; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding: 20px; line-height: 1.6; background-color: #f0f2f5; color: #333; }
+        .container { max-width: 800px; margin: auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        h1 { text-align: center; color: #2c3e50; }
+        h2 { border-bottom: 2px solid #27ae60; padding-bottom: 10px; color: #27ae60; margin-top: 30px; }
+        .card { border: 1px solid #ddd; padding: 15px; margin: 15px 0; border-radius: 8px; background: #fff; transition: 0.3s; }
+        .card:hover { box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        input, textarea { display: block; width: 100%; box-sizing: border-box; margin-bottom: 15px; padding: 10px; border: 1px solid #ccc; border-radius: 6px; }
+        button { padding: 12px 20px; cursor: pointer; background: #27ae60; color: white; border: none; border-radius: 6px; font-weight: bold; width: 100%; transition: 0.3s; }
+        button:hover { background: #219150; }
+        .btn-google { background: #4285F4; margin-bottom: 10px; }
+        .btn-google:hover { background: #357ae8; }
+        .btn-sel { background: #3498db; margin-top: 10px; }
+        .btn-sel:hover { background: #2980b9; }
+        #userStatus { text-align: center; font-weight: bold; }
+        .id-highlight { background: #e8f5e9; padding: 10px; border-radius: 4px; border: 1px dashed #27ae60; margin-bottom: 15px; font-weight: bold; color: #2e7d32; }
     </style>
 </head>
 <body>
 
-    <h1>Robs Delivery Express</h1>
-    <button id="btnLogin" class="btn-google">Login con Google</button>
+<div class="container">
+    <h1>Robs Delivery Express 🚀</h1>
+    
+    <button id="btnLogin" class="btn-google">Iniciar Sesión con Google</button>
     <p id="userStatus">Estado: No conectado</p>
 
     <hr>
 
-    <h2>Registrar Restaurante</h2>
-    <input id="restNombre" placeholder="Nombre del restaurante">
-    <input id="restNacionalidad" placeholder="Nacionalidad (ej. México, España)">
+    <h2>1. Registrar mi Restaurante</h2>
+    <input id="restNombre" placeholder="Nombre del restaurante (ej. Pizza Hut)">
+    <input id="restNacionalidad" placeholder="Nacionalidad">
     <input id="restProvincia" placeholder="Provincia o Departamento">
     <input id="restTelefono" placeholder="Teléfono de contacto">
-    <input id="restWeb" placeholder="Sitio Web o Redes Sociales">
+    <input id="restWeb" placeholder="Link de Facebook o Sitio Web">
     <button id="btnGuardarRest">Guardar Restaurante</button>
 
     <hr>
 
-    <h2>Agregar Producto</h2>
-    <input id="prodNombre" placeholder="Nombre del producto">
-    <input id="prodPrecio" type="number" placeholder="Precio Unitario">
-    <textarea id="prodCaract" placeholder="Características del producto"></textarea>
-    <input id="prodPago" placeholder="Link de pago (Stripe/PayPal)">
-    <input id="prodRestID" placeholder="ID del Restaurante (se obtiene de la lista)">
-    <button id="btnGuardarProd">Guardar Producto</button>
+    <h2>2. Agregar Productos al Menú</h2>
+    <div id="statusSeleccion" class="id-highlight">Ningún restaurante seleccionado</div>
+    
+    <input type="hidden" id="prodRestID">
+    
+    <input id="prodNombre" placeholder="Nombre del platillo (ej. Hamburguesa Doble)">
+    <input id="prodPrecio" type="number" placeholder="Precio ($)">
+    <textarea id="prodCaract" placeholder="Descripción o ingredientes"></textarea>
+    <input id="prodPago" placeholder="Link de pago (PayPal/Stripe)">
+    <button id="btnGuardarProd">Subir Producto al Menú</button>
 
     <hr>
 
-    <h2>Restaurantes Activos</h2>
+    <h2>Mis Restaurantes Activos</h2>
     <div id="listaRest"></div>
+</div>
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-app.js";
-        import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-auth.js";
-        import { getFirestore, collection, addDoc, onSnapshot, query, doc, updateDoc } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-firestore.js";
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-app.js";
+    import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-auth.js";
+    import { getFirestore, collection, addDoc, onSnapshot, query, where } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-firestore.js";
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyCo8_Qzp_Up72063TbNqDPWFTPqZxvHRcE",
-            authDomain: "robs-delivery-express-9fd38.firebaseapp.com",
-            projectId: "robs-delivery-express-9fd38",
-            storageBucket: "robs-delivery-express-9fd38.firebasestorage.app",
-            messagingSenderId: "932715527848",
-            appId: "1:932715527848:web:ecdfa23d7cc9c0ca6f4c9d"
-        };
+    const firebaseConfig = {
+        apiKey: "AIzaSyCo8_Qzp_Up72063TbNqDPWFTPqZxvHRcE",
+        authDomain: "robs-delivery-express-9fd38.firebaseapp.com",
+        projectId: "robs-delivery-express-9fd38",
+        storageBucket: "robs-delivery-express-9fd38.firebasestorage.app",
+        messagingSenderId: "932715527848",
+        appId: "1:932715527848:web:ecdfa23d7cc9c0ca6f4c9d"
+    };
 
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
-        const provider = new GoogleAuthProvider();
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+    const provider = new GoogleAuthProvider();
 
-        // --- AUTENTICACIÓN ---
-        document.getElementById('btnLogin').onclick = async () => {
-            try {
-                await signInWithPopup(auth, provider);
-                alert("¡Login exitoso!");
-            } catch (error) { console.error(error); }
-        };
+    // --- LOGIN ---
+    document.getElementById('btnLogin').onclick = async () => {
+        try {
+            await signInWithPopup(auth, provider);
+        } catch (error) {
+            console.error(error);
+            alert("Error al iniciar sesión");
+        }
+    };
 
-        onAuthStateChanged(auth, (user) => {
-            const status = document.getElementById('userStatus');
-            status.innerText = user ? `Conectado como: ${user.email}` : "Estado: No conectado";
-        });
+    onAuthStateChanged(auth, (user) => {
+        const status = document.getElementById('userStatus');
+        if (user) {
+            status.innerText = `Conectado: ${user.email}`;
+            status.style.color = "#27ae60";
+            cargarMisRestaurantes(user.uid);
+        } else {
+            status.innerText = "Estado: No conectado";
+            status.style.color = "#e74c3c";
+        }
+    });
 
-        // --- GUARDAR RESTAURANTE ---
-        document.getElementById('btnGuardarRest').onclick = async () => {
-            const user = auth.currentUser;
-            if (!user) return alert("Debes iniciar sesión");
+    // --- GUARDAR RESTAURANTE (Con Selección Automática) ---
+    document.getElementById('btnGuardarRest').onclick = async () => {
+        const user = auth.currentUser;
+        if (!user) return alert("Primero inicia sesión");
 
-            await addDoc(collection(db, "restaurantes"), {
+        try {
+            const docRef = await addDoc(collection(db, "restaurantes"), {
                 nombre: document.getElementById("restNombre").value,
                 nacionalidad: document.getElementById("restNacionalidad").value,
                 provincia: document.getElementById("restProvincia").value,
                 telefono: document.getElementById("restTelefono").value,
                 web: document.getElementById("restWeb").value,
                 duenoId: user.uid,
-                estado: "activo", // Para el panel de admin
-                pagoAlDia: false  // Para controlar la suscripción mensual
+                estado: "activo"
             });
-            alert("Restaurante guardado con éxito");
-        };
+            
+            // Selección automática inmediata
+            seleccionarRestaurante(docRef.id, document.getElementById("restNombre").value);
+            alert("¡Restaurante creado y seleccionado para añadir productos!");
+        } catch (e) {
+            alert("Error: " + e);
+        }
+    };
 
-        // --- GUARDAR PRODUCTO ---
-        document.getElementById('btnGuardarProd').onclick = async () => {
+    // --- FUNCIÓN PARA SELECCIONAR ---
+    window.seleccionarRestaurante = (id, nombre) => {
+        document.getElementById("prodRestID").value = id;
+        document.getElementById("statusSeleccion").innerText = "Gestionando menú de: " + nombre;
+        document.getElementById("statusSeleccion").style.background = "#e8f5e9";
+    };
+
+    // --- GUARDAR PRODUCTO ---
+    document.getElementById('btnGuardarProd').onclick = async () => {
+        const restId = document.getElementById("prodRestID").value;
+        if (!restId) return alert("Por favor, selecciona un restaurante de la lista abajo o crea uno nuevo.");
+
+        try {
             await addDoc(collection(db, "menu"), {
                 nombre: document.getElementById("prodNombre").value,
                 precio: parseFloat(document.getElementById("prodPrecio").value),
                 caracteristicas: document.getElementById("prodCaract").value,
                 linkPago: document.getElementById("prodPago").value,
-                restauranteId: document.getElementById("prodRestID").value
+                restauranteId: restId
             });
-            alert("Producto agregado al menú");
-        };
+            alert("Producto añadido con éxito");
+            // Limpiar campos de producto
+            document.getElementById("prodNombre").value = "";
+            document.getElementById("prodPrecio").value = "";
+        } catch (e) {
+            alert("Error al subir producto");
+        }
+    };
 
-        // --- LISTAR RESTAURANTES EN TIEMPO REAL ---
-        onSnapshot(collection(db, "restaurantes"), (snapshot) => {
+    // --- CARGAR LISTA ---
+    function cargarMisRestaurantes(uid) {
+        const q = query(collection(db, "restaurantes"), where("duenoId", "==", uid));
+        onSnapshot(q, (snapshot) => {
             let html = "";
             snapshot.forEach(doc => {
                 let r = doc.data();
                 html += `
                     <div class="card">
-                        <h3>${r.nombre} (ID: ${doc.id})</h3>
-                        <p>📍 ${r.provincia}, ${r.nacionalidad}</p>
-                        <p>📞 ${r.telefono} | 🌐 ${r.web}</p>
-                        <p>Estado: <b>${r.estado}</b></p>
+                        <h3>${r.nombre}</h3>
+                        <p>📍 ${r.provincia} | ${r.nacionalidad}</p>
+                        <button class="btn-sel" onclick="seleccionarRestaurante('${doc.id}', '${r.nombre}')">
+                            Gestionar este Menú
+                        </button>
                     </div>
                 `;
             });
             document.getElementById("listaRest").innerHTML = html;
         });
-    </script>
+    }
+</script>
+
 </body>
 </html>
