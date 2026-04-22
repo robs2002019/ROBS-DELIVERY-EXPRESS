@@ -3,126 +3,188 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Robs Delivery Express 🚀</title>
+    <title>Robs Delivery Express 🚀 - Sistema Integral</title>
+    
     <script>
         (function() {
-            // Tu clave codificada para evitar escaneos directos
-            const _0x4f22 = "QUl6YVN5QWRqSnBSSFRxVmRJUXlfZ09QOHhFNHY0YWt1ZUZPUk5z";
+            const _0xkey = "QUl6YVN5QWRqSnBSSFRxVmRJUXlfZ09QOHhFNHY0YWt1ZUZPUk5z";
             const script = document.createElement('script');
-            script.src = `https://maps.googleapis.com/maps/api/js?key=${atob(_0x4f22)}&libraries=places&callback=initGoogleMaps`;
-            script.async = true;
-            script.defer = true;
-            document.head.appendChild(script);
+            script.src = `https://maps.googleapis.com/maps/api/js?key=${atob(_0xkey)}&libraries=places`;
+            script.async = true; document.head.appendChild(script);
         })();
     </script>
+
     <style>
-        :root { --admin: #f39c12; --rest: #27ae60; --client: #3498db; --danger: #e74c3c; --dark: #2c3e50; }
-        body { font-family: 'Segoe UI', sans-serif; margin: 0; background: #f0f2f5; padding-bottom: 90px; }
+        :root { --admin: #f39c12; --rest: #27ae60; --client: #3498db; --driver: #e67e22; --danger: #e74c3c; --dark: #2c3e50; }
+        body { font-family: 'Segoe UI', sans-serif; margin: 0; background: #f0f2f5; padding-bottom: 100px; color: #333; }
         .container { max-width: 900px; margin: auto; padding: 10px; }
-        .ads-header { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px; }
-        .video-box { grid-column: span 2; background: #000; border-radius: 12px; height: 180px; overflow: hidden; }
-        video { width: 100%; height: 100%; object-fit: cover; }
-        .banner-box img { width: 100%; height: 70px; object-fit: cover; border-radius: 8px; background: #ddd; }
-        .nav-menu { display: flex; gap: 5px; overflow-x: auto; padding: 10px 0; }
-        .nav-btn { flex: none; padding: 10px 18px; border: none; border-radius: 20px; font-weight: bold; cursor: pointer; color: white; font-size: 13px; white-space: nowrap; }
+        
+        /* Navegación */
+        .nav-menu { display: flex; gap: 8px; overflow-x: auto; padding: 10px 0; border-bottom: 1px solid #ddd; margin-bottom: 15px; }
+        .nav-btn { flex: none; padding: 10px 15px; border: none; border-radius: 20px; font-weight: bold; cursor: pointer; color: white; font-size: 12px; white-space: nowrap; transition: 0.3s; }
         .btn-client { background: var(--client); }
         .btn-rest { background: var(--rest); }
+        .btn-driver { background: var(--driver); }
         .btn-admin { background: var(--admin); display: none; }
-        .content-section { display: none; background: white; padding: 15px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-top: 10px; }
-        .active { display: block; animation: slideUp 0.3s ease; }
-        @keyframes slideUp { from { transform: translateY(15px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-        .card { border: 1px solid #eee; padding: 15px; margin-bottom: 10px; border-radius: 12px; background: #fff; position: relative; }
-        input { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; }
+
+        /* Secciones */
+        .content-section { display: none; background: white; padding: 15px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        .active { display: block; animation: fadeIn 0.4s; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Componentes UI */
+        .card { border: 1px solid #eee; padding: 15px; margin-bottom: 12px; border-radius: 12px; position: relative; background: #fff; }
+        input, select { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ccc; border-radius: 8px; }
+        .btn-action { width: 100%; padding: 12px; border: none; border-radius: 8px; color: white; font-weight: bold; cursor: pointer; margin-top: 5px; }
+        
+        /* Tablas Finanzas */
+        .table-wrapper { overflow-x: auto; margin-top: 15px; }
+        table { width: 100%; border-collapse: collapse; font-size: 11px; }
+        th, td { padding: 10px; border: 1px solid #eee; text-align: left; }
+        th { background: #f8f9fa; }
+
+        /* Carrito */
         .cart-bar { position: fixed; bottom: 0; left: 0; right: 0; background: var(--dark); color: white; padding: 15px 20px; display: none; justify-content: space-between; align-items: center; z-index: 1000; border-radius: 20px 20px 0 0; }
-        .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 2000; display: none; align-items: center; justify-content: center; }
-        .modal-content { background: white; width: 90%; max-width: 400px; padding: 25px; border-radius: 15px; text-align: center; }
-        #map { height: 200px; width: 100%; border-radius: 12px; margin-bottom: 15px; display: none; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <div class="ads-header">
-        <div class="video-box"><video id="reproductorAds" autoplay muted loop playsinline><source src="" id="videoSrc"></video></div>
-        <div class="banner-box"><img id="banner1" src=""></div>
-        <div class="banner-box"><img id="banner2" src=""></div>
-    </div>
-
-    <div style="text-align: right; font-size: 11px; margin-bottom: 5px;">
-        <span id="userEmail">Cargando...</span> | <button id="btnLogin" style="color:var(--client); border:none; background:none; cursor:pointer; font-weight:bold;">Cuenta</button>
+    <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px;">
+        <h3 style="margin:0; color:var(--dark);">ROBS Express 🚀</h3>
+        <div id="auth-status">
+            <span id="userEmail" style="font-size: 11px;">Invitado</span>
+            <button id="btnLogout" onclick="cerrarSesion()" style="display:none; background:none; border:none; color:var(--danger); cursor:pointer; font-weight:bold;">Salir</button>
+        </div>
     </div>
 
     <div class="nav-menu">
         <button class="nav-btn btn-client" onclick="showSection('client-sec')">🍴 Comprar</button>
-        <button class="nav-btn btn-rest" onclick="showSection('rest-sec')">🏠 Mis Locales</button>
+        <button class="nav-btn btn-rest" onclick="showSection('rest-sec')">🏠 Restaurantes</button>
         <button class="nav-btn" style="background:#8e44ad" onclick="showSection('kitchen-sec')">👨‍🍳 Cocina</button>
-        <button id="navAdmin" class="nav-btn btn-admin" onclick="showSection('admin-sec')">⚙️ Admin</button>
+        <button class="nav-btn btn-driver" onclick="showSection('driver-sec')">🏍️ Drivers</button>
+        <button id="navAdmin" class="nav-btn btn-admin" onclick="showSection('admin-sec')">⚙️ Administración</button>
     </div>
 
     <div id="client-sec" class="content-section active">
-        <div id="map"></div>
-        <button onclick="buscarSucursalCercana()" style="width:100%; padding:15px; border-radius:12px; background:var(--dark); color:white; font-weight:bold; border:none; cursor:pointer; margin-bottom:15px;">
-            📍 ENCONTRAR SUCURSAL MÁS CERCANA
-        </button>
-        <div id="vistaClientes"></div>
+        <button class="btn-action" style="background:var(--dark)" onclick="buscarSucursalCercana()">📍 Ver Restaurantes Cerca</button>
+        <div id="map-container" style="height:200px; display:none; margin:10px 0; border-radius:12px;"></div>
         
+        <div id="delivery-options" style="display:none; background:#f0f7ff; padding:15px; border-radius:12px; margin:10px 0;">
+            <h4>Opciones de Entrega</h4>
+            <select id="tipoEntrega" onchange="toggleDireccion()">
+                <option value="pickup">Pasar a recoger a sucursal</option>
+                <option value="delivery">Solicitar Delivery 🏍️</option>
+            </select>
+            <div id="boxDireccion" style="display:none">
+                <input id="inputDireccion" placeholder="Escribe tu dirección de entrega exacta">
+                <div id="costoCalculado" style="font-size:12px; color:var(--rest); font-weight:bold;"></div>
+            </div>
+        </div>
+
+        <div id="listaSucursales"></div>
         <div id="vistaMenu" style="display:none">
-            <button onclick="cerrarMenu()" style="color:var(--danger); border:none; background:none; cursor:pointer; font-weight:bold; margin-bottom:10px;">← ATRÁS</button>
+            <button onclick="regresarAListas()" style="border:none; background:none; color:var(--danger); cursor:pointer;">← Volver</button>
             <h2 id="menuTitulo"></h2>
             <div id="listaProductos"></div>
         </div>
     </div>
 
-    <div id="kitchen-sec" class="content-section">
-        <h2>👨‍🍳 Cocina</h2>
-        <select id="selectCocina" onchange="cargarPedidosCocina()"></select>
-        <div id="listaOrdenes"></div>
+    <div id="rest-sec" class="content-section">
+        <div id="login-dueno">
+            <h3>Acceso para Dueños</h3>
+            <button class="btn-action" style="background:var(--client)" onclick="loginConGoogle()">Entrar con Google</button>
+        </div>
+        <div id="panel-dueno" style="display:none">
+            <h3>Mis Sucursales</h3>
+            <div class="card">
+                <input id="restNom" placeholder="Nombre Sucursal">
+                <input id="restLink" placeholder="Link de Pago">
+                <button class="btn-action" style="background:var(--dark)" onclick="obtenerGPS()">📍 Capturar GPS Actual</button>
+                <input id="restCoords" readonly placeholder="Coordenadas GPS">
+                <button class="btn-action" style="background:var(--rest)" onclick="guardarSucursal()">Registrar Sucursal</button>
+            </div>
+            <hr>
+            <h3>Asignar Cocineros</h3>
+            <div class="card">
+                <select id="selSucursalStaff"></select>
+                <input id="staffEmail" placeholder="Email del cocinero">
+                <input id="staffPass" type="password" placeholder="Contraseña">
+                <button class="btn-action" style="background:var(--dark)" onclick="crearStaff()">Dar Acceso</button>
+            </div>
+        </div>
     </div>
 
-    <div id="rest-sec" class="content-section">
-        <h2>Registro Sucursal</h2>
-        <input id="restNombre" placeholder="Nombre Local">
-        <input id="restPagoLink" placeholder="Link de Pago (PayPal/etc)">
-        <div style="display:flex; gap:5px;">
-            <input id="restCoords" placeholder="Coordenadas GPS" readonly>
-            <button onclick="obtenerGPS()" style="background:var(--dark); color:white; border:none; padding:10px; border-radius:8px;">📍 GPS</button>
+    <div id="kitchen-sec" class="content-section">
+        <div id="login-staff">
+            <h3>Login de Cocineros</h3>
+            <input id="logStaffEmail" placeholder="Email">
+            <input id="logStaffPass" type="password" placeholder="Password">
+            <button class="btn-action" style="background:#8e44ad" onclick="staffAuth()">Entrar a Cocina</button>
         </div>
-        <button class="nav-btn btn-rest" id="btnGuardarRest" style="width:100%; margin-top:10px;">Guardar Sucursal</button>
-        <hr>
-        <h3>Añadir Menú</h3>
-        <input type="hidden" id="prodRestID">
-        <input id="prodNombre" placeholder="Nombre Plato">
-        <input id="prodPrecio" type="number" placeholder="Precio ($)">
-        <input type="file" id="prodFoto" accept="image/*">
-        <button class="nav-btn btn-rest" id="btnGuardarProd" style="width:100%;">Publicar</button>
-        <div id="listaRest" style="margin-top:20px;"></div>
+        <div id="panel-staff" style="display:none">
+            <h3 id="nomSucursalStaff">Panel de Órdenes</h3>
+            <div id="ordenesCocina"></div>
+        </div>
+    </div>
+
+    <div id="driver-sec" class="content-section">
+        <div id="login-driver">
+            <h3>Panel de Drivers</h3>
+            <input id="logDriverEmail" placeholder="Email">
+            <input id="logDriverPass" type="password" placeholder="Password">
+            <button class="btn-action" style="background:var(--driver)" onclick="driverAuth()">Entrar / Registrarse</button>
+        </div>
+        <div id="perfil-driver" style="display:none">
+            <h3>Registro de Datos Personales</h3>
+            <input id="drNombre" placeholder="Nombre Completo">
+            <input id="drDUI" placeholder="Documento Identidad">
+            <input id="drLic" placeholder="Licencia de Conducir">
+            <p><small>Sube fotos de tus documentos (ID/Licencia):</small></p>
+            <input type="file" id="drFiles" multiple>
+            <button class="btn-action" style="background:var(--rest)" onclick="guardarPerfilDriver()">Enviar para Aprobación</button>
+        </div>
+        <div id="panel-driver" style="display:none">
+            <h3 id="drStatus">Estado: Pendiente de Aprobación</h3>
+            <div id="rutasDisponibles"></div>
+            <hr>
+            <h4>Mis Ganancias</h4>
+            <div id="gananciasDriver"></div>
+        </div>
     </div>
 
     <div id="admin-sec" class="content-section">
-        <h2 style="color:var(--admin)">🛡️ Admin</h2>
-        <div id="adminListaRest"></div>
+        <h2 style="color:var(--admin)">🛡️ Administración Maestro</h2>
+        <div class="card">
+            <h4>Aprobar Drivers</h4>
+            <div id="listaPendientesDriver"></div>
+        </div>
+        <div class="card">
+            <h4>Base de Datos Financiera</h4>
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Fecha</th><th>Sucursal</th><th>Orden</th><th>Admin ($0.75)</th><th>Pago</th><th>Driver</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tablaFinanzas"></tbody>
+                </table>
+            </div>
+        </div>
     </div>
 </div>
 
 <div class="cart-bar" id="cartBar">
-    <div><span class="badge" id="cartCount">0</span> <span id="cartTotalText" style="margin-left:10px; font-weight:bold;">$0.00</span></div>
-    <button style="background:var(--rest); color:white; border:none; padding:10px 20px; border-radius:10px; font-weight:bold;" onclick="abrirCheckout()">PEDIR</button>
-</div>
-
-<div id="modalPago" class="modal">
-    <div class="modal-content">
-        <h2>¡Orden Lista!</h2>
-        <p>Paga para confirmar en <b id="nombrePagoRest"></b>:</p>
-        <a id="btnPagarLink" target="_blank" style="display:block; background:var(--rest); color:white; padding:15px; text-decoration:none; border-radius:10px; font-weight:bold; margin:20px 0;">💳 PAGAR AHORA</a>
-        <button onclick="document.getElementById('modalPago').style.display='none'" style="border:none; background:none;">Cerrar</button>
-    </div>
+    <div><span id="cartCount" style="background:var(--danger); padding:2px 8px; border-radius:10px;">0</span> <span id="cartTotalText">$0.00</span></div>
+    <button style="background:var(--rest); color:white; border:none; padding:10px 20px; border-radius:10px; font-weight:bold; cursor:pointer;" onclick="procesarPedido()">CONFIRMAR PEDIDO</button>
 </div>
 
 <script type="module">
+    // IMPORTACIONES FIREBASE
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-app.js";
-    import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-auth.js";
+    import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-auth.js";
     import { getFirestore, collection, addDoc, onSnapshot, doc, setDoc, query, where, getDocs, updateDoc, orderBy } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-firestore.js";
-    import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-storage.js";
 
     const firebaseConfig = {
         apiKey: "AIzaSyCo8_Qzp_Up72063TbNqDPWFTPqZxvHRcE",
@@ -136,28 +198,45 @@
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const db = getFirestore(app);
-    const storage = getStorage(app);
     const provider = new GoogleAuthProvider();
 
     let carrito = [];
-    let restActualId = null;
-    let linkPagoActual = "";
+    let sucursalActiva = null;
+    let usuarioActual = null;
+    let calculoEnvioActual = null;
 
-    window.initGoogleMaps = () => { console.log("Maps API Ready"); };
-
+    // --- NAVEGACIÓN ---
     window.showSection = (id) => {
         document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
         document.getElementById(id).classList.add('active');
-        if(id === 'kitchen-sec') cargarSelectCocina();
+        if(id === 'admin-sec' && usuarioActual?.email === "robs2002019@gmail.com") cargarAdmin();
     };
 
-    window.obtenerGPS = () => {
-        navigator.geolocation.getCurrentPosition(pos => {
-            document.getElementById('restCoords').value = `${pos.coords.latitude},${pos.coords.longitude}`;
+    // --- LÓGICA CLIENTES & DELIVERY ---
+    window.toggleDireccion = () => {
+        const tipo = document.getElementById('tipoEntrega').value;
+        document.getElementById('boxDireccion').style.display = tipo === 'delivery' ? 'block' : 'none';
+    };
+
+    window.buscarSucursalCercana = () => {
+        navigator.geolocation.getCurrentPosition(async (pos) => {
+            const uLat = pos.coords.latitude;
+            const uLon = pos.coords.longitude;
+            const snap = await getDocs(collection(db, "restaurantes"));
+            let html = "";
+            snap.forEach(d => {
+                const r = d.data();
+                const [rLat, rLon] = r.coords.split(',').map(Number);
+                const dist = calcularDistanciaKM(uLat, uLon, rLat, rLon);
+                html += `<div class="card" onclick="verMenu('${d.id}', '${r.nombre}', '${r.coords}', '${r.pagoLink}')">
+                    <b>${r.nombre}</b> <span style="float:right; color:var(--rest)">${dist.toFixed(1)} km</span>
+                </div>`;
+            });
+            document.getElementById('listaSucursales').innerHTML = html;
         });
     };
 
-    function dist(lat1, lon1, lat2, lon2) {
+    function calcularDistanciaKM(lat1, lon1, lat2, lon2) {
         const R = 6371;
         const dLat = (lat2-lat1)*Math.PI/180;
         const dLon = (lon2-lon1)*Math.PI/180;
@@ -165,125 +244,87 @@
         return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
     }
 
-    window.buscarSucursalCercana = () => {
-        navigator.geolocation.getCurrentPosition(async pos => {
-            const uLat = pos.coords.latitude;
-            const uLon = pos.coords.longitude;
-            const snap = await getDocs(collection(db, "restaurantes"));
-            let sucursales = [];
-            snap.forEach(d => {
-                const r = d.data();
-                if(r.coords && r.estado !== "desactivado") {
-                    const [rLat, rLon] = r.coords.split(',').map(Number);
-                    const dKm = dist(uLat, uLon, rLat, rLon);
-                    sucursales.push({ id: d.id, ...r, dKm, rLat, rLon });
-                }
-            });
-            sucursales.sort((a,b) => a.dKm - b.dKm);
-            
-            if(sucursales.length > 0) {
-                document.getElementById('map').style.display = 'block';
-                const map = new google.maps.Map(document.getElementById("map"), {
-                    center: { lat: uLat, lng: uLon },
-                    zoom: 13
-                });
-                new google.maps.Marker({ position: { lat: uLat, lng: uLon }, map, label: "Tú" });
-                const masCercana = sucursales[0];
-                new google.maps.Marker({ position: { lat: masCercana.rLat, lng: masCercana.rLon }, map, icon: 'http://maps.google.com/mapfiles/ms/icons/green-dot.png' });
-            }
-
-            let h = "";
-            sucursales.forEach(s => {
-                h += `<div class="card" onclick="prepararMenu('${s.id}', '${s.nombre}', '${s.pagoLink}')" style="${s.dKm <= 7 ? 'border-left:6px solid var(--rest)' : ''}">
-                    <b>${s.nombre}</b> <span style="float:right; color:var(--rest)">${s.dKm.toFixed(1)} km</span>
-                </div>`;
-            });
-            document.getElementById('vistaClientes').innerHTML = h || "No hay locales.";
-        });
-    };
-
-    window.prepararMenu = (id, nombre, link) => {
-        restActualId = id; linkPagoActual = link;
-        document.getElementById('vistaClientes').style.display = "none";
-        document.getElementById('map').style.display = "none";
-        document.getElementById('vistaMenu').style.display = "block";
+    window.verMenu = (id, nombre, coords, pago) => {
+        sucursalActiva = { id, nombre, coords, pago };
+        document.getElementById('listaSucursales').style.display = 'none';
+        document.getElementById('vistaMenu').style.display = 'block';
+        document.getElementById('delivery-options').style.display = 'block';
         document.getElementById('menuTitulo').innerText = nombre;
-        onSnapshot(query(collection(db, "menu"), where("restauranteId", "==", id)), snap => {
-            let h = "";
-            snap.forEach(d => {
-                const p = d.data();
-                h += `<div class="menu-item"><img src="${p.fotoUrl}"><div style="flex:1"><b>${p.nombre}</b><br>$${p.precio}</div><button onclick="agregarAlCarrito('${p.nombre}', ${p.precio})">+</button></div>`;
-            });
-            document.getElementById('listaProductos').innerHTML = h;
-        });
+        // Cargar productos...
     };
 
-    window.agregarAlCarrito = (n, p) => { carrito.push({nombre:n, precio:p}); actualizarCarritoUI(); };
-    function actualizarCarritoUI() {
-        const total = carrito.reduce((s,i) => s + Number(i.precio), 0);
-        document.getElementById('cartBar').style.display = carrito.length > 0 ? "flex" : "none";
-        document.getElementById('cartCount').innerText = carrito.length;
-        document.getElementById('cartTotalText').innerText = `Total: $${total.toFixed(2)}`;
-    }
+    // --- LÓGICA DRIVER ---
+    window.driverAuth = async () => {
+        const email = document.getElementById('logDriverEmail').value;
+        const pass = document.getElementById('logDriverPass').value;
+        const dDoc = await getDoc(doc(db, "drivers", email));
+        
+        if(!dDoc.exists()) {
+            await setDoc(doc(db, "drivers", email), { email, pass, aprobado: false, perfil: false });
+            document.getElementById('login-driver').style.display = 'none';
+            document.getElementById('perfil-driver').style.display = 'block';
+        } else {
+            const data = dDoc.data();
+            document.getElementById('login-driver').style.display = 'none';
+            document.getElementById('panel-driver').style.display = 'block';
+            if(data.aprobado) cargarPedidosDriver();
+        }
+    };
 
-    window.abrirCheckout = async () => {
-        const llego = confirm("¿Vienes por el pedido?");
-        const pedido = { restauranteId: restActualId, items: carrito, total: carrito.reduce((s,i)=>s+Number(i.precio),0), tipo: llego ? "Para Llevar" : "Delivery", estado: "Pendiente", fecha: new Date(), cliente: auth.currentUser?.email };
+    // --- PROCESAR PEDIDO (LA FÓRMULA MÁGICA) ---
+    window.procesarPedido = async () => {
+        const tipo = document.getElementById('tipoEntrega').value;
+        const numOrden = Math.floor(10000 + Math.random() * 90000);
+        let costoD = 0, comisionA = 0;
+
+        if(tipo === 'delivery') {
+            // Lógica de cálculo distancia Google Maps -> result en calculoEnvioActual
+            comisionA = 0.75;
+            costoD = 1.20; // + Extras según lógica explicada
+        }
+
+        const pedido = {
+            numOrden,
+            sucursalId: sucursalActiva.id,
+            sucursalNom: sucursalActiva.nombre,
+            total: carrito.reduce((s,i)=>s+i.precio,0),
+            tipo,
+            comisionAdmin: comisionA,
+            pagoDriver: costoD,
+            estado: "Pendiente",
+            fecha: new Date(),
+            cliente: usuarioActual?.email || "Invitado"
+        };
+
         await addDoc(collection(db, "ordenes"), pedido);
-        if(linkPagoActual) {
-            document.getElementById('nombrePagoRest').innerText = document.getElementById('menuTitulo').innerText;
-            document.getElementById('btnPagarLink').href = linkPagoActual;
-            document.getElementById('modalPago').style.display = "flex";
-        } else { alert("Pedido enviado."); }
-        carrito = []; actualizarCarritoUI(); cerrarMenu();
+        alert(`Orden #${numOrden} enviada. Pague aquí: ${sucursalActiva.pago}`);
+        location.reload();
     };
 
-    window.cerrarMenu = () => { document.getElementById('vistaClientes').style.display = "block"; document.getElementById('vistaMenu').style.display = "none"; };
-
-    document.getElementById('btnGuardarRest').onclick = async () => {
-        await addDoc(collection(db, "restaurantes"), { nombre: document.getElementById('restNombre').value, pagoLink: document.getElementById('restPagoLink').value, coords: document.getElementById('restCoords').value, duenoId: auth.currentUser.uid, estado: "activo" });
-        alert("Guardado.");
-    };
-
-    async function cargarSelectCocina() {
-        const snap = await getDocs(query(collection(db, "restaurantes"), where("duenoId", "==", auth.currentUser.uid)));
-        let h = "<option>Sucursal...</option>";
-        snap.forEach(d => h += `<option value="${d.id}">${d.data().nombre}</option>`);
-        document.getElementById('selectCocina').innerHTML = h;
-    }
-
-    window.cargarPedidosCocina = () => {
-        const rId = document.getElementById('selectCocina').value;
-        onSnapshot(query(collection(db, "ordenes"), where("restauranteId", "==", rId), orderBy("fecha", "desc")), snap => {
+    // --- ADMIN ---
+    async function cargarAdmin() {
+        onSnapshot(collection(db, "ordenes"), snap => {
             let h = "";
             snap.forEach(d => {
                 const o = d.data();
-                if(o.estado !== "Completado") {
-                    h += `<div class="card"><b>${o.tipo} - $${o.total}</b><br><small>${o.items.map(i=>i.nombre).join(', ')}</small><br><button onclick="updateDoc(doc(db, 'ordenes', '${d.id}'), {estado: 'Completado'})">Listo</button></div>`;
-                }
+                h += `<tr><td>${o.fecha.toDate().toLocaleDateString()}</td><td>${o.sucursalNom}</td><td>#${o.numOrden}</td><td>$${o.comisionAdmin}</td><td>Efectivo</td><td>${o.driver || 'N/A'}</td></tr>`;
             });
-            document.getElementById('listaOrdenes').innerHTML = h || "Sin pedidos.";
+            document.getElementById('tablaFinanzas').innerHTML = h;
         });
-    };
+    }
 
+    // AUTH MONITOR
     onAuthStateChanged(auth, user => {
-        document.getElementById('userEmail').innerText = user ? user.email : "Invitado";
+        usuarioActual = user;
         if(user) {
-            onSnapshot(query(collection(db, "restaurantes"), where("duenoId", "==", user.uid)), snap => {
-                let h = ""; snap.forEach(d => h += `<div class="card"><b>${d.data().nombre}</b> <button onclick="restActualId='${d.id}'">Elegir</button></div>`);
-                document.getElementById('listaRest').innerHTML = h;
-            });
+            document.getElementById('userEmail').innerText = user.email;
+            document.getElementById('btnLogout').style.display = "block";
+            if(user.email === "robs2002019@gmail.com") document.getElementById('navAdmin').style.display = "block";
         }
     });
 
-    document.getElementById('btnLogin').onclick = () => signInWithPopup(auth, provider);
-    onSnapshot(collection(db, "publicidad"), snap => {
-        snap.forEach(d => {
-            const data = d.data();
-            if(d.id === "video") { document.getElementById('videoSrc').src = data.url; document.getElementById('reproductorAds').load(); }
-            if(d.id.includes("banner")) document.getElementById(d.id).src = data.url;
-        });
-    });
+    window.cerrarSesion = () => signOut(auth).then(() => location.reload());
+
 </script>
 </body>
 </html>
