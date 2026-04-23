@@ -15,7 +15,7 @@
     </script>
 
     <style>
-        :root { --admin: #f39c12; --rest: #27ae60; --client: #3498db; --driver: #e67e22; --danger: #e74c3c; --dark: #1a4a40; --accent: #ffffff; }
+        :root { --admin: #f39c12; --rest: #27ae60; --client: #3498db; --driver: #e67e22; --danger: #e74c3c; --dark: #1a4a40; }
         
         /* FONDO SOLICITADO #2E7868 */
         body { font-family: 'Segoe UI', sans-serif; margin: 0; background: #2E7868; padding-bottom: 100px; color: white; }
@@ -24,76 +24,133 @@
         /* PUBLICIDAD Y RADIO */
         .ads-box { background: #000; border-radius: 16px; overflow: hidden; margin-bottom: 10px; }
         #videoPlayer { width: 100%; height: 180px; object-fit: cover; display: block; }
-        
-        .radio-box { background: rgba(255,255,255,0.1); padding: 15px; border-radius: 15px; margin-bottom: 15px; text-align: center; border: 1px solid rgba(255,255,255,0.2); }
-        .radio-box h4 { margin: 0 0 10px 0; font-size: 14px; letter-spacing: 1px; color: #fff; }
-        audio { width: 100%; height: 35px; filter: invert(100%); }
+        .banners-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
+        .banner-slot { background: rgba(255,255,255,0.1); height: 80px; border-radius: 12px; overflow: hidden; border: 1px solid rgba(255,255,255,0.2); }
+        .banner-slot img { width: 100%; height: 100%; object-fit: cover; }
+
+        .radio-box { background: rgba(0,0,0,0.3); padding: 12px; border-radius: 15px; margin-bottom: 15px; text-align: center; }
+        audio { width: 100%; height: 30px; filter: invert(1); opacity: 0.8; }
 
         /* NAVEGACIÓN */
-        .nav-bar { display: flex; gap: 8px; overflow-x: auto; padding: 10px 0; margin-bottom: 20px; }
+        .nav-bar { display: flex; gap: 8px; overflow-x: auto; padding: 10px 0; }
         .nav-btn { flex: none; padding: 12px 20px; border: none; border-radius: 25px; color: white; font-weight: bold; cursor: pointer; font-size: 13px; white-space: nowrap; box-shadow: 0 4px 6px rgba(0,0,0,0.2); }
 
         /* SECCIONES */
         .section { display: none; background: rgba(255,255,255,0.1); padding: 22px; border-radius: 20px; backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); }
         .active { display: block; }
 
-        /* COMPONENTES */
-        .card { background: white; border-radius: 15px; padding: 15px; margin-bottom: 15px; color: #333; }
-        input, select { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ccc; border-radius: 10px; box-sizing: border-box; }
-        .btn-full { width: 100%; padding: 15px; border: none; border-radius: 10px; color: white; font-weight: bold; cursor: pointer; margin-top: 10px; font-size: 14px; }
+        /* CARDS Y UI */
+        .card { background: white; border-radius: 15px; padding: 18px; margin-bottom: 15px; color: #333; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        .store-card { display: flex; align-items: center; gap: 15px; background: white; padding: 12px; border-radius: 15px; margin-bottom: 10px; color: #333; cursor: pointer; }
+        .store-logo { width: 60px; height: 60px; border-radius: 10px; object-fit: cover; }
         
-        .cart-float { position: fixed; bottom: 0; left: 0; right: 0; background: var(--dark); color: white; padding: 20px; display: none; justify-content: space-between; align-items: center; border-radius: 25px 25px 0 0; }
+        .upload-area { border: 2px dashed #ccc; padding: 15px; text-align: center; border-radius: 12px; cursor: pointer; background: #f9f9f9; color: #666; margin: 10px 0; }
+        #previewLogo { width: 80px; height: 80px; object-fit: cover; border-radius: 50%; display: none; margin: 5px auto; border: 2px solid var(--rest); }
+
+        input, select { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ccc; border-radius: 10px; box-sizing: border-box; }
+        .btn-full { width: 100%; padding: 15px; border: none; border-radius: 10px; color: white; font-weight: bold; cursor: pointer; font-size: 14px; margin-top: 5px; }
+        
+        .plan-opt { border: 2px solid #eee; padding: 12px; border-radius: 10px; margin-bottom: 8px; cursor: pointer; }
+        .plan-opt.selected { border-color: var(--rest); background: #e8f5e9; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <div class="ads-box">
-        <video id="videoPlayer" autoplay muted loop playsinline><source src="" id="vSource"></video>
+    <div class="ads-box"><video id="videoPlayer" autoplay muted loop playsinline><source src="" id="vSource"></video></div>
+    <div class="banners-grid">
+        <div class="banner-slot"><img id="mainB1" src=""></div>
+        <div class="banner-slot"><img id="mainB2" src=""></div>
     </div>
 
     <div class="radio-box">
-        <h4>📻 RADIO 503 EL SALVADOR 503</h4>
-        <audio controls>
-            <source src="https://stream.zeno.fm/tu_stream_aqui" type="audio/mpeg">
-            Tu navegador no soporta el reproductor de radio.
-        </audio>
+        <small style="letter-spacing: 1px;">📻 RADIO 503 EL SALVADOR 503</small>
+        <audio controls><source src="https://stream.zeno.fm/u8p6769u938uv" type="audio/mpeg"></audio>
     </div>
 
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-        <div><small>Hola,</small><br><b id="uEmail">Invitado</b></div>
-        <button id="btnExit" onclick="logout()" style="display:none; background:var(--danger); border:none; color:white; padding:6px 12px; border-radius:8px; cursor:pointer; font-weight:bold;">Salir</button>
+        <div><small>Bienvenido,</small><br><b id="uEmail">Invitado</b></div>
+        <button id="btnExit" onclick="logout()" style="display:none; background:var(--danger); border:none; color:white; padding:6px 12px; border-radius:8px; font-weight:bold; cursor:pointer;">Salir</button>
     </div>
 
     <div class="nav-bar">
         <button class="nav-btn" style="background:var(--client)" onclick="tryClientTab()">🍴 Hacer Pedido</button>
-        <button class="nav-btn" style="background:var(--rest)" onclick="openTab('r-tab')">🏠 Soy Dueño</button>
+        <button class="nav-btn" style="background:var(--rest)" onclick="openTab('r-tab')">🏠 Mi Restaurante</button>
         <button class="nav-btn" style="background:#8e44ad" onclick="openTab('k-tab')">👨‍🍳 Cocina</button>
         <button class="nav-btn" style="background:var(--driver)" onclick="openTab('d-tab')">🏍️ Drivers</button>
         <button id="admNav" class="nav-btn" style="background:var(--admin); display:none;" onclick="openTab('a-tab')">🛡️ Admin</button>
     </div>
 
     <div id="c-tab" class="section">
-        <button class="btn-full" style="background:var(--dark)" onclick="loadStores()">📍 ENCONTRAR SUCURSALES</button>
-        <div id="storeList" style="margin-top:20px;"></div>
-        </div>
+        <h3>Explorar Restaurantes</h3>
+        <div id="storeListVisual"></div>
+    </div>
 
     <div id="r-tab" class="section active">
         <div id="dueno-login">
-            <h3>🔑 Acceso Requerido</h3>
-            <p>Para realizar pedidos o gestionar locales, por favor inicia sesión.</p>
+            <h3>Portal de Negocios</h3>
+            <p>¡Regístrate y obtén el **Primer Mes Gratis**!</p>
             <button class="btn-full" style="background:var(--client)" onclick="googleIn()">Entrar con Google</button>
         </div>
+
         <div id="dueno-panel" style="display:none">
+            <div class="card">
+                <h4>Perfil del Restaurante</h4>
+                <input id="resNombre" placeholder="Nombre Comercial">
+                
+                <div class="upload-area" onclick="document.getElementById('fileLogo').click()">
+                    <span id="uploadText">Toca para subir tu LOGO 📸</span>
+                    <img id="previewLogo">
+                    <input type="file" id="fileLogo" accept="image/*" style="display:none" onchange="previewImg(event)">
+                </div>
+                <button class="btn-full" style="background:var(--rest)" onclick="saveResData()">Guardar Perfil</button>
             </div>
+
+            <div id="setup-plan" class="card" style="display:none">
+                <h4>Elige tu Plan de Pago</h4>
+                <div class="plan-opt" id="p34" onclick="setPlan('fijo')"><b>Plan Fijo $34.99/mes</b><br><small>Todo incluido</small></div>
+                <div class="plan-opt" id="p19" onclick="setPlan('comision')"><b>Plan Comisión 19%</b><br><small>Paga por orden semanal</small></div>
+                <button class="btn-full" style="background:var(--dark)" onclick="activarPlan()">Activar Mes Gratis</button>
+            </div>
+
+            <div id="dash-pagos" class="card" style="display:none">
+                <h4>Estado de Suscripción</h4>
+                <div id="areaComision" style="display:none">
+                    <p>Ventas de la semana: <b id="ventasSem">--</b></p>
+                    <p>Comisión (19%): <b id="totalCom">--</b></p>
+                    <a id="link19" href="#" target="_blank" class="btn-full" style="background:var(--admin); text-decoration:none; display:block; text-align:center;">Pagar Comisión</a>
+                </div>
+                <div id="areaFijo" style="display:none">
+                    <p>Plan Mensual Activo</p>
+                    <a id="link34" href="#" target="_blank" class="btn-full" style="background:var(--rest); text-decoration:none; display:block; text-align:center;">Pagar Mensualidad</a>
+                </div>
+            </div>
+        </div>
     </div>
 
+    <div id="a-tab" class="section">
+        <h3>Panel Maestro</h3>
+        <div class="card">
+            <h4>📺 Multimedia Pública</h4>
+            <input id="admVid" placeholder="Link Video MP4">
+            <input id="admB1" placeholder="Link Banner 1">
+            <input id="admB2" placeholder="Link Banner 2">
+            <button class="btn-full" style="background:var(--admin)" onclick="saveAds()">Publicar</button>
+        </div>
+        <div class="card">
+            <h4>💰 Links de Pagos Oficiales</h4>
+            <input id="admP34" placeholder="URL Pago $34.99">
+            <input id="admP19" placeholder="URL Pago 19%">
+            <button class="btn-full" style="background:var(--dark)" onclick="saveLinks()">Guardar Links</button>
+        </div>
     </div>
+</div>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-app.js";
     import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-auth.js";
-    import { getFirestore, collection, addDoc, onSnapshot, doc, setDoc, query, where, getDocs, updateDoc, orderBy } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-firestore.js";
+    import { getFirestore, collection, addDoc, onSnapshot, doc, setDoc, query, where, getDocs, updateDoc } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-firestore.js";
+    import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-storage.js";
 
     const firebaseConfig = {
         apiKey: "AIzaSyCo8_Qzp_Up72063TbNqDPWFTPqZxvHRcE",
@@ -107,34 +164,109 @@
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const db = getFirestore(app);
+    const storage = getStorage(app);
     const prov = new GoogleAuthProvider();
 
-    let curUser = null;
+    let curUser = null, selPlan = null;
 
-    // --- PROTECCIÓN DE PESTAÑA CLIENTE ---
-    window.tryClientTab = () => {
-        if (!curUser) {
-            alert("⚠️ Por favor, inicia sesión para poder realizar pedidos.");
-            openTab('r-tab'); // Envía al usuario a la pestaña de login
-        } else {
-            openTab('c-tab');
-        }
-    };
-
-    window.openTab = (id) => {
-        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-        document.getElementById(id).classList.add('active');
-    };
-
-    // --- CARGA DE PUBLICIDAD ---
+    // --- PUBLICIDAD ---
     onSnapshot(doc(db, "configuracion", "publicidad"), d => {
         if(d.exists()){
             const data = d.data();
             if(data.videoUrl) { document.getElementById('vSource').src = data.videoUrl; document.getElementById('videoPlayer').load(); }
+            if(data.banner1) document.getElementById('mainB1').src = data.banner1;
+            if(data.banner2) document.getElementById('mainB2').src = data.banner2;
         }
     });
 
-    // --- MONITOREO DE SESIÓN ---
+    // --- LOGOS ---
+    window.previewImg = (e) => {
+        const reader = new FileReader();
+        reader.onload = () => {
+            const p = document.getElementById('previewLogo');
+            p.src = reader.result; p.style.display = 'block';
+            document.getElementById('uploadText').style.display = 'none';
+        };
+        reader.readAsDataURL(e.target.files[0]);
+    };
+
+    window.saveResData = async () => {
+        const nom = document.getElementById('resNombre').value;
+        const file = document.getElementById('fileLogo').files[0];
+        if(!nom) return alert("Nombre requerido");
+        
+        let url = "";
+        if(file){
+            const sRef = ref(storage, `logos/${curUser.uid}`);
+            const snap = await uploadBytes(sRef, file);
+            url = await getDownloadURL(snap.ref);
+        }
+
+        const q = query(collection(db, "restaurantes"), where("owner", "==", curUser.uid));
+        const res = await getDocs(q);
+        const data = { nombre: nom, owner: curUser.uid };
+        if(url) data.logo = url;
+
+        if(res.empty) await addDoc(collection(db, "restaurantes"), data);
+        else await updateDoc(doc(db, "restaurantes", res.docs[0].id), data);
+        alert("Guardado!");
+        checkStatus();
+    };
+
+    // --- PLANES ---
+    window.setPlan = (p) => {
+        selPlan = p;
+        document.getElementById('p34').classList.toggle('selected', p === 'fijo');
+        document.getElementById('p19').classList.toggle('selected', p === 'comision');
+    };
+
+    window.activarPlan = async () => {
+        const q = query(collection(db, "restaurantes"), where("owner", "==", curUser.uid));
+        const res = await getDocs(q);
+        await updateDoc(doc(db, "restaurantes", res.docs[0].id), { plan: selPlan, start: new Date() });
+        checkStatus();
+    };
+
+    // --- STATUS & ADMIN ---
+    async function checkStatus() {
+        const q = query(collection(db, "restaurantes"), where("owner", "==", curUser.uid));
+        const res = await getDocs(q);
+        if(!res.empty){
+            const d = res.docs[0].data();
+            document.getElementById('resNombre').value = d.nombre || "";
+            if(d.logo) { document.getElementById('previewLogo').src = d.logo; document.getElementById('previewLogo').style.display='block'; document.getElementById('uploadText').style.display='none'; }
+            
+            if(!d.plan) document.getElementById('setup-plan').style.display = 'block';
+            else {
+                document.getElementById('setup-plan').style.display = 'none';
+                document.getElementById('dash-pagos').style.display = 'block';
+                document.getElementById('areaFijo').style.display = d.plan === 'fijo' ? 'block' : 'none';
+                document.getElementById('areaComision').style.display = d.plan === 'comision' ? 'block' : 'none';
+            }
+        }
+    }
+
+    window.saveAds = async () => {
+        await setDoc(doc(db, "configuracion", "publicidad"), { 
+            videoUrl: document.getElementById('admVid').value, 
+            banner1: document.getElementById('admB1').value, 
+            banner2: document.getElementById('admB2').value 
+        });
+    };
+
+    // --- NAVEGACIÓN CLIENTE ---
+    window.tryClientTab = async () => {
+        if(!curUser) return alert("Inicia sesión en 'Mi Restaurante'");
+        openTab('c-tab');
+        const s = await getDocs(collection(db, "restaurantes"));
+        let h = ""; s.forEach(d => {
+            const r = d.data();
+            h += `<div class="store-card"><img src="${r.logo}" class="store-logo"><b>${r.nombre}</b></div>`;
+        });
+        document.getElementById('storeListVisual').innerHTML = h;
+    };
+
+    // --- AUTH ---
     onAuthStateChanged(auth, u => {
         curUser = u;
         if(u){
@@ -143,18 +275,16 @@
             document.getElementById('dueno-login').style.display = 'none';
             document.getElementById('dueno-panel').style.display = 'block';
             if(u.email === "robs2002019@gmail.com") document.getElementById('admNav').style.display='block';
-        } else {
-            document.getElementById('uEmail').innerText = "Invitado";
-            document.getElementById('btnExit').style.display = 'none';
-            document.getElementById('dueno-login').style.display = 'block';
-            document.getElementById('dueno-panel').style.display = 'none';
-            openTab('r-tab'); // Mostrar login por defecto
+            checkStatus();
         }
     });
 
     window.googleIn = () => signInWithPopup(auth, prov);
     window.logout = () => signOut(auth).then(()=>location.reload());
-
+    window.openTab = (id) => {
+        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+    };
 </script>
 </body>
 </html>
