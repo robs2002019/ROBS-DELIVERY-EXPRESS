@@ -3,188 +3,92 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Robs Delivery Express 🚀 - Todo en Uno</title>
+    <title>Robs Delivery Express 🚀</title>
     
     <script>
         (function() {
             const _0xkey = "QUl6YVN5QWRqSnBSSFRxVmRJUXlfZ09QOHhFNHY0YWt1ZUZPUk5z";
             const script = document.createElement('script');
             script.src = `https://maps.googleapis.com/maps/api/js?key=${atob(_0xkey)}&libraries=places`;
-            script.async = true; 
-            document.head.appendChild(script);
+            script.async = true; document.head.appendChild(script);
         })();
     </script>
 
     <style>
-        :root { --admin: #f39c12; --rest: #27ae60; --client: #3498db; --driver: #e67e22; --danger: #e74c3c; --dark: #2c3e50; }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; background: #f4f7f6; padding-bottom: 100px; }
-        .container { max-width: 900px; margin: auto; padding: 10px; }
-
-        /* PUBLICIDAD SIEMPRE VISIBLE */
-        .ads-section { background: #000; border-radius: 15px; overflow: hidden; margin-bottom: 10px; }
-        #reproductorAds { width: 100%; height: 180px; object-fit: cover; display: block; }
-        .banners-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 15px; }
-        .banner-slot { background: #ddd; height: 70px; border-radius: 8px; overflow: hidden; }
-        .banner-slot img { width: 100%; height: 100%; object-fit: cover; }
-
-        /* NAVEGACIÓN POR ROLES */
-        .nav-menu { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 10px; margin-bottom: 15px; border-bottom: 1px solid #ddd; }
-        .nav-btn { flex: none; padding: 10px 15px; border: none; border-radius: 20px; color: white; font-weight: bold; cursor: pointer; font-size: 12px; white-space: nowrap; }
+        :root { --admin: #f39c12; --rest: #27ae60; --client: #3498db; --driver: #e67e22; --danger: #e74c3c; --dark: #1a4a40; --accent: #ffffff; }
         
+        /* FONDO SOLICITADO #2E7868 */
+        body { font-family: 'Segoe UI', sans-serif; margin: 0; background: #2E7868; padding-bottom: 100px; color: white; }
+        .container { max-width: 850px; margin: auto; padding: 12px; }
+
+        /* PUBLICIDAD Y RADIO */
+        .ads-box { background: #000; border-radius: 16px; overflow: hidden; margin-bottom: 10px; }
+        #videoPlayer { width: 100%; height: 180px; object-fit: cover; display: block; }
+        
+        .radio-box { background: rgba(255,255,255,0.1); padding: 15px; border-radius: 15px; margin-bottom: 15px; text-align: center; border: 1px solid rgba(255,255,255,0.2); }
+        .radio-box h4 { margin: 0 0 10px 0; font-size: 14px; letter-spacing: 1px; color: #fff; }
+        audio { width: 100%; height: 35px; filter: invert(100%); }
+
+        /* NAVEGACIÓN */
+        .nav-bar { display: flex; gap: 8px; overflow-x: auto; padding: 10px 0; margin-bottom: 20px; }
+        .nav-btn { flex: none; padding: 12px 20px; border: none; border-radius: 25px; color: white; font-weight: bold; cursor: pointer; font-size: 13px; white-space: nowrap; box-shadow: 0 4px 6px rgba(0,0,0,0.2); }
+
         /* SECCIONES */
-        .content-section { display: none; background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
-        .active { display: block; animation: slideUp 0.3s ease-out; }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .section { display: none; background: rgba(255,255,255,0.1); padding: 22px; border-radius: 20px; backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); }
+        .active { display: block; }
 
-        /* UI COMPONENTS */
-        .card { border: 1px solid #eee; padding: 15px; margin-bottom: 15px; border-radius: 12px; background: #fff; }
-        input, select { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box; }
-        .btn-main { width: 100%; padding: 14px; border: none; border-radius: 8px; color: white; font-weight: bold; cursor: pointer; margin-top: 5px; }
+        /* COMPONENTES */
+        .card { background: white; border-radius: 15px; padding: 15px; margin-bottom: 15px; color: #333; }
+        input, select { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ccc; border-radius: 10px; box-sizing: border-box; }
+        .btn-full { width: 100%; padding: 15px; border: none; border-radius: 10px; color: white; font-weight: bold; cursor: pointer; margin-top: 10px; font-size: 14px; }
         
-        /* TABLAS ADMIN */
-        .table-responsive { overflow-x: auto; margin-top: 15px; }
-        table { width: 100%; border-collapse: collapse; font-size: 11px; }
-        th, td { padding: 10px; border: 1px solid #eee; text-align: left; }
-        th { background: #f9f9f9; }
-
-        .cart-bar { position: fixed; bottom: 0; left: 0; right: 0; background: var(--dark); color: white; padding: 15px; display: none; justify-content: space-between; align-items: center; z-index: 1000; border-radius: 20px 20px 0 0; }
+        .cart-float { position: fixed; bottom: 0; left: 0; right: 0; background: var(--dark); color: white; padding: 20px; display: none; justify-content: space-between; align-items: center; border-radius: 25px 25px 0 0; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <div class="ads-section">
-        <video id="reproductorAds" autoplay muted loop playsinline><source src="" id="videoSrc"></video>
-    </div>
-    <div class="banners-grid">
-        <div class="banner-slot"><img id="imgBanner1" src="https://via.placeholder.com/400x150?text=Banner+1"></div>
-        <div class="banner-slot"><img id="imgBanner2" src="https://via.placeholder.com/400x150?text=Banner+2"></div>
+    <div class="ads-box">
+        <video id="videoPlayer" autoplay muted loop playsinline><source src="" id="vSource"></video>
     </div>
 
-    <div style="display: flex; justify-content: space-between; align-items: center; padding: 5px 0 15px 0;">
-        <span id="userEmail" style="font-size: 13px; font-weight: bold; color: var(--dark);">Modo Invitado</span>
-        <button id="btnLogout" onclick="cerrarSesion()" style="display:none; background:none; border:none; color:var(--danger); font-weight:bold; cursor:pointer;">Cerrar Sesión 🚪</button>
+    <div class="radio-box">
+        <h4>📻 RADIO 503 EL SALVADOR 503</h4>
+        <audio controls>
+            <source src="https://stream.zeno.fm/tu_stream_aqui" type="audio/mpeg">
+            Tu navegador no soporta el reproductor de radio.
+        </audio>
     </div>
 
-    <div class="nav-menu">
-        <button class="nav-btn" style="background:var(--client)" onclick="showSection('client-sec')">🍴 Pedir Comida</button>
-        <button class="nav-btn" style="background:var(--rest)" onclick="showSection('rest-sec')">🏠 Dueños</button>
-        <button class="nav-btn" style="background:#8e44ad" onclick="showSection('kitchen-sec')">👨‍🍳 Cocina</button>
-        <button class="nav-btn" style="background:var(--driver)" onclick="showSection('driver-sec')">🏍️ Drivers</button>
-        <button id="navAdmin" class="nav-btn" style="background:var(--admin); display:none;" onclick="showSection('admin-sec')">⚙️ Admin Maestro</button>
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+        <div><small>Hola,</small><br><b id="uEmail">Invitado</b></div>
+        <button id="btnExit" onclick="logout()" style="display:none; background:var(--danger); border:none; color:white; padding:6px 12px; border-radius:8px; cursor:pointer; font-weight:bold;">Salir</button>
     </div>
 
-    <div id="client-sec" class="content-section active">
-        <button class="btn-main" style="background:var(--dark)" onclick="buscarSucursales()">📍 Ver Sucursales Cercanas</button>
-        <div id="listaRestaurantes" style="margin-top:15px;"></div>
-        
-        <div id="vistaMenu" style="display:none">
-            <button onclick="cerrarMenu()" style="border:none; background:none; color:var(--danger); cursor:pointer; font-weight:bold;">← Volver</button>
-            <h2 id="menuTitulo"></h2>
-            <div class="card" id="opcionesEnvio" style="background:#eef7ff">
-                <label>Tipo de Pedido:</label>
-                <select id="tipoPedido" onchange="toggleEnvioUI()">
-                    <option value="pickup">Pasar a recoger personalmente</option>
-                    <option value="delivery">Solicitar Delivery 🛵</option>
-                </select>
-                <div id="uiEntrega" style="display:none">
-                    <input id="dirEntrega" placeholder="Dirección de entrega exacta">
-                    <div id="costoEnvioText" style="font-size:12px; color:var(--rest); font-weight:bold;"></div>
-                </div>
+    <div class="nav-bar">
+        <button class="nav-btn" style="background:var(--client)" onclick="tryClientTab()">🍴 Hacer Pedido</button>
+        <button class="nav-btn" style="background:var(--rest)" onclick="openTab('r-tab')">🏠 Soy Dueño</button>
+        <button class="nav-btn" style="background:#8e44ad" onclick="openTab('k-tab')">👨‍🍳 Cocina</button>
+        <button class="nav-btn" style="background:var(--driver)" onclick="openTab('d-tab')">🏍️ Drivers</button>
+        <button id="admNav" class="nav-btn" style="background:var(--admin); display:none;" onclick="openTab('a-tab')">🛡️ Admin</button>
+    </div>
+
+    <div id="c-tab" class="section">
+        <button class="btn-full" style="background:var(--dark)" onclick="loadStores()">📍 ENCONTRAR SUCURSALES</button>
+        <div id="storeList" style="margin-top:20px;"></div>
+        </div>
+
+    <div id="r-tab" class="section active">
+        <div id="dueno-login">
+            <h3>🔑 Acceso Requerido</h3>
+            <p>Para realizar pedidos o gestionar locales, por favor inicia sesión.</p>
+            <button class="btn-full" style="background:var(--client)" onclick="googleIn()">Entrar con Google</button>
+        </div>
+        <div id="dueno-panel" style="display:none">
             </div>
-            <div id="listaProductos"></div>
-        </div>
     </div>
 
-    <div id="rest-sec" class="content-section">
-        <div id="login-dueno">
-            <h3>Acceso Propietarios</h3>
-            <button class="btn-main" style="background:var(--client)" onclick="loginConGoogle()">Entrar con Google</button>
-        </div>
-        <div id="panel-dueno" style="display:none">
-            <h3>Gestión de Locales</h3>
-            <div class="card">
-                <input id="resNom" placeholder="Nombre Local">
-                <input id="resPago" placeholder="Link de Pago (PayPal/Wompi)">
-                <button onclick="obtenerGPS()" style="margin-bottom:5px;">Capturar Ubicación GPS</button>
-                <input id="resCoords" readonly placeholder="Coordenadas GPS">
-                <button class="btn-main" style="background:var(--rest)" onclick="guardarLocal()">Guardar Local</button>
-            </div>
-            <hr>
-            <h3>Registrar Cocineros</h3>
-            <div class="card">
-                <select id="selSucursalCocina"></select>
-                <input id="staffEmail" placeholder="Email cocinero">
-                <input id="staffPass" type="password" placeholder="Contraseña">
-                <button class="btn-main" style="background:var(--dark)" onclick="crearCuentaCocinero()">Asignar a Cocina</button>
-            </div>
-        </div>
     </div>
-
-    <div id="kitchen-sec" class="content-section">
-        <div id="login-kitchen">
-            <h3>Panel de Cocina</h3>
-            <input id="kEmail" placeholder="Email">
-            <input id="kPass" type="password" placeholder="Contraseña">
-            <button class="btn-main" style="background:#8e44ad" onclick="accesoCocina()">Entrar</button>
-        </div>
-        <div id="panel-kitchen" style="display:none">
-            <h2 id="sucursalKitchenNom">Ordenes</h2>
-            <div id="listaOrdenesKitchen"></div>
-        </div>
-    </div>
-
-    <div id="driver-sec" class="content-section">
-        <div id="login-driver">
-            <h3>Panel de Drivers</h3>
-            <input id="drEmail" placeholder="Email">
-            <input id="drPass" type="password" placeholder="Contraseña">
-            <button class="btn-main" style="background:var(--driver)" onclick="accesoDriver()">Entrar / Registrarse</button>
-        </div>
-        <div id="registro-driver" style="display:none">
-            <h3>Perfil Requerido para Aprobación</h3>
-            <input id="drNombre" placeholder="Nombre Completo">
-            <input id="drDoc" placeholder="N° Documento Identidad">
-            <input id="drLicencia" placeholder="N° Licencia">
-            <p><small>Sube fotos de documentos:</small></p>
-            <input type="file" multiple id="drArchivos">
-            <button class="btn-main" style="background:var(--rest)" onclick="enviarPerfilDriver()">Enviar Documentación</button>
-        </div>
-        <div id="panel-driver" style="display:none">
-            <h3 id="drAvisoStatus">Estado: Revisando Documentos</h3>
-            <div id="ordenesDisponiblesDriver"></div>
-        </div>
-    </div>
-
-    <div id="admin-sec" class="content-section">
-        <h2 style="color:var(--admin)">🛡️ Administración Maestro</h2>
-        <div class="card" style="background:#fff3e0">
-            <h4>Control de Publicidad</h4>
-            <input id="admVideo" placeholder="Link Video MP4">
-            <input id="admB1" placeholder="Link Banner 1 (JPG/PNG)">
-            <input id="admB2" placeholder="Link Banner 2 (JPG/PNG)">
-            <button class="btn-main" style="background:var(--admin)" onclick="subirPublicidad()">Actualizar Publicidad Global</button>
-        </div>
-        <div class="card">
-            <h4>Aprobación de Drivers</h4>
-            <div id="listaAprobarDrivers"></div>
-        </div>
-        <div class="card">
-            <h4>Reporte Financiero</h4>
-            <div class="table-responsive">
-                <table>
-                    <thead><tr><th>Fecha</th><th>Orden</th><th>Admin($0.75)</th><th>Pago</th><th>Driver</th></tr></thead>
-                    <tbody id="tablaFinanzas"></tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="cart-bar" id="cartBar">
-    <div><span id="cartCount" style="background:var(--danger); padding:2px 8px; border-radius:10px;">0</span> <span id="cartTotalText">$0.00</span></div>
-    <button style="background:var(--rest); color:white; border:none; padding:10px 18px; border-radius:10px; font-weight:bold; cursor:pointer;" onclick="enviarPedido()">FINALIZAR PEDIDO</button>
-</div>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-app.js";
@@ -203,114 +107,53 @@
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const db = getFirestore(app);
-    const provider = new GoogleAuthProvider();
+    const prov = new GoogleAuthProvider();
 
-    let userGlobal = null;
-    let carrito = [];
-    let restActivo = null;
+    let curUser = null;
 
-    // --- CARGA DE PUBLICIDAD (PÚBLICA) ---
-    onSnapshot(doc(db, "configuracion", "publicidad"), (d) => {
+    // --- PROTECCIÓN DE PESTAÑA CLIENTE ---
+    window.tryClientTab = () => {
+        if (!curUser) {
+            alert("⚠️ Por favor, inicia sesión para poder realizar pedidos.");
+            openTab('r-tab'); // Envía al usuario a la pestaña de login
+        } else {
+            openTab('c-tab');
+        }
+    };
+
+    window.openTab = (id) => {
+        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+    };
+
+    // --- CARGA DE PUBLICIDAD ---
+    onSnapshot(doc(db, "configuracion", "publicidad"), d => {
         if(d.exists()){
             const data = d.data();
-            if(data.videoUrl) { document.getElementById('videoSrc').src = data.videoUrl; document.getElementById('reproductorAds').load(); }
-            if(data.banner1) document.getElementById('imgBanner1').src = data.banner1;
-            if(data.banner2) document.getElementById('imgBanner2').src = data.banner2;
+            if(data.videoUrl) { document.getElementById('vSource').src = data.videoUrl; document.getElementById('videoPlayer').load(); }
         }
     });
 
-    // --- NAVEGACIÓN ---
-    window.showSection = (id) => {
-        document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
-        document.getElementById(id).classList.add('active');
-        if(id === 'admin-sec' && userGlobal?.email === "robs2002019@gmail.com") cargarAdminPanel();
-    };
-
-    // --- LÓGICA CLIENTE ---
-    window.buscarSucursales = async () => {
-        const snap = await getDocs(collection(db, "restaurantes"));
-        let html = "";
-        snap.forEach(d => {
-            const r = d.data();
-            html += `<div class="card" onclick="abrirMenu('${d.id}', '${r.nombre}', '${r.pago}', '${r.coords}')">
-                <b>${r.nombre}</b><br><small>📍 Tap para ver menú</small></div>`;
-        });
-        document.getElementById('listaRestaurantes').innerHTML = html;
-    };
-
-    window.abrirMenu = (id, nombre, pago, coords) => {
-        restActivo = {id, nombre, pago, coords};
-        document.getElementById('listaRestaurantes').style.display = 'none';
-        document.getElementById('vistaMenu').style.display = 'block';
-        document.getElementById('menuTitulo').innerText = nombre;
-        // Aquí cargarías los productos de la colección "menu" donde restauranteId == id
-    };
-
-    window.toggleEnvioUI = () => {
-        const tipo = document.getElementById('tipoPedido').value;
-        document.getElementById('uiEntrega').style.display = tipo === 'delivery' ? 'block' : 'none';
-    };
-
-    // --- LÓGICA DRIVERS ---
-    window.accesoDriver = async () => {
-        const email = document.getElementById('drEmail').value;
-        const pass = document.getElementById('drPass').value;
-        const q = query(collection(db, "drivers"), where("email", "==", email));
-        const snap = await getDocs(q);
-        
-        if(snap.empty){
-            await setDoc(doc(db, "drivers", email), { email, pass, aprobado: false, perfilOk: false });
-            document.getElementById('login-driver').style.display = 'none';
-            document.getElementById('registro-driver').style.display = 'block';
+    // --- MONITOREO DE SESIÓN ---
+    onAuthStateChanged(auth, u => {
+        curUser = u;
+        if(u){
+            document.getElementById('uEmail').innerText = u.email;
+            document.getElementById('btnExit').style.display = 'block';
+            document.getElementById('dueno-login').style.display = 'none';
+            document.getElementById('dueno-panel').style.display = 'block';
+            if(u.email === "robs2002019@gmail.com") document.getElementById('admNav').style.display='block';
         } else {
-            const d = snap.docs[0].data();
-            document.getElementById('login-driver').style.display = 'none';
-            document.getElementById('panel-driver').style.display = 'block';
-            if(d.aprobado) {
-                document.getElementById('drAvisoStatus').innerText = "Estado: Activo ✅";
-                // Cargar órdenes con estado "Listo para entrega"
-            }
-        }
-    };
-
-    // --- LÓGICA ADMIN ---
-    window.subirPublicidad = async () => {
-        await setDoc(doc(db, "configuracion", "publicidad"), {
-            videoUrl: document.getElementById('admVideo').value,
-            banner1: document.getElementById('admB1').value,
-            banner2: document.getElementById('admB2').value
-        });
-        alert("Publicidad Actualizada");
-    };
-
-    async function cargarAdminPanel() {
-        // Cargar drivers para aprobar y tabla de finanzas
-        onSnapshot(collection(db, "ordenes"), snap => {
-            let h = "";
-            snap.forEach(d => {
-                const o = d.data();
-                h += `<tr><td>${o.fecha.toDate().toLocaleDateString()}</td><td>#${o.numOrden}</td><td>$0.75</td><td>${o.metodo || 'Efectivo'}</td><td>${o.driver || '---'}</td></tr>`;
-            });
-            document.getElementById('tablaFinanzas').innerHTML = h;
-        });
-    }
-
-    // --- AUTH MONITOR ---
-    onAuthStateChanged(auth, (user) => {
-        userGlobal = user;
-        if(user){
-            document.getElementById('userEmail').innerText = user.email;
-            document.getElementById('btnLogout').style.display = "block";
-            if(user.email === "robs2002019@gmail.com") document.getElementById('navAdmin').style.display = "block";
-        } else {
-            document.getElementById('userEmail').innerText = "Modo Invitado";
-            document.getElementById('btnLogout').style.display = "none";
-            document.getElementById('navAdmin').style.display = "none";
+            document.getElementById('uEmail').innerText = "Invitado";
+            document.getElementById('btnExit').style.display = 'none';
+            document.getElementById('dueno-login').style.display = 'block';
+            document.getElementById('dueno-panel').style.display = 'none';
+            openTab('r-tab'); // Mostrar login por defecto
         }
     });
 
-    window.loginConGoogle = () => signInWithPopup(auth, provider);
-    window.cerrarSesion = () => signOut(auth).then(() => location.reload());
+    window.googleIn = () => signInWithPopup(auth, prov);
+    window.logout = () => signOut(auth).then(()=>location.reload());
 
 </script>
 </body>
