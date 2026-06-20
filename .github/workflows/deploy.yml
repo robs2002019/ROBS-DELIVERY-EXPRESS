@@ -2,7 +2,7 @@ name: Deploy to Firebase Hosting
 on:
   push:
     branches:
-      - main
+      - main # Si tu rama principal se llama 'principal', cambia 'main' por 'principal'
 
 jobs:
   deploy:
@@ -11,9 +11,9 @@ jobs:
       - name: Checkout del código
         uses: actions/checkout@v4
 
-      - name: Desplegar en Firebase Hosting
+      - name: Desplegar en Firebase Hosting Tradicional
         uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: '${{ secrets.GITHUB_TOKEN }}'
           firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT }}'
-          projectId: robsdeliveryexpress
+          projectId: robs-delivery-express-9fd38
