@@ -1,0 +1,1585 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<meta name="theme-color" content="#00b341"/>
+<title>ROBS DELIVERY EXPRESS</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<style>
+:root{
+  --r:#10b981;--r2:#047857;--dark:#0a0d0c;--card:#13181a;--card2:#171d1f;
+  --blue:#2979ff;--red:#ff1744;--yellow:#ffd600;--g:#22d3ee;--o:#ff6b00;
+  --text:#f0f0f0;--sub:#888;--line:rgba(255,255,255,.07);--glow:rgba(16,185,129,.35);
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-font-smoothing:antialiased;}
+body{font-family:"Inter",sans-serif;background:var(--dark);color:var(--text);min-height:100vh;line-height:1.45;}
+h1,h2,h3,.logo{font-family:"Outfit",sans-serif;letter-spacing:-.01em;}
+.nav{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:#0d1110;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:800;backdrop-filter:blur(8px);}
+.logo{font-size:18px;color:var(--text);font-weight:700;letter-spacing:-.01em;display:flex;align-items:center;gap:7px;}
+.logo-badge{width:28px;height:28px;border-radius:9px;background:linear-gradient(135deg,var(--r),var(--r2));display:inline-flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;}
+.nav-right{display:flex;align-items:center;gap:6px;}
+.nav-tabs{display:flex;gap:5px;flex-wrap:wrap;}
+.nav-tab{background:none;border:1px solid #2a2e2e;color:#aaa;padding:6px 12px;border-radius:9px;font-size:11px;cursor:pointer;font-family:"Outfit",sans-serif;font-weight:600;letter-spacing:.2px;transition:.2s;width:auto;margin-top:0;}
+.nav-tab.active,.nav-tab:hover{background:var(--r);color:#fff;border-color:var(--r);}
+.btn-logout{background:none;border:1px solid #3a3e3e;color:#aaa;padding:6px 10px;border-radius:9px;font-size:11px;cursor:pointer;font-family:"Outfit",sans-serif;font-weight:600;transition:.2s;width:auto;margin-top:0;}
+.btn-logout:hover{background:var(--red);color:#fff;border-color:var(--red);}
+.container{max-width:620px;margin:auto;padding:12px;}
+.section{display:none;}.section.active{display:block;}
+.card{background:var(--card);border:1px solid var(--line);padding:18px;border-radius:18px;margin-bottom:14px;box-shadow:0 16px 40px -16px rgba(0,0,0,.6);}
+.card-title{font-family:"Outfit",sans-serif;font-size:16px;font-weight:600;color:var(--r);margin-bottom:14px;letter-spacing:0;border-bottom:1px solid var(--line);padding-bottom:10px;}
+input,select,textarea{width:100%;padding:12px 14px;margin-top:6px;border-radius:12px;border:1px solid #2a2e2e;font-size:14px;background:#101413;color:var(--text);font-family:"Inter",sans-serif;transition:.2s;}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--r);box-shadow:0 0 0 3px rgba(16,185,129,.15);}
+input[type="file"]{padding:8px;}
+select option{background:#111;}
+textarea{resize:none;min-height:70px;}
+label{font-size:11px;color:var(--sub);margin-top:10px;display:block;font-weight:600;text-transform:uppercase;letter-spacing:.6px;}
+button{width:100%;padding:13px;margin-top:8px;border:none;border-radius:12px;font-size:14px;font-weight:600;cursor:pointer;transition:.2s;font-family:"Outfit",sans-serif;letter-spacing:0;}
+button:hover{opacity:.92;transform:translateY(-1px);}
+.btn{background:linear-gradient(135deg,var(--r),var(--r2));color:#fff;box-shadow:0 8px 24px -8px var(--glow);}
+.btn-blue{background:linear-gradient(135deg,#2979ff,#1565c0);color:#fff;}
+.btn-red{background:linear-gradient(135deg,#ff1744,#c62828);color:#fff;}
+.btn-g{background:linear-gradient(135deg,#22d3ee,#0891b2);color:#001318;}
+.btn-o{background:linear-gradient(135deg,#ff6b00,#e55a00);color:#fff;}
+.btn-sm{padding:9px 14px;font-size:13px;width:auto;margin-top:0;}
+.btn-xs{padding:6px 11px;font-size:11px;width:auto;margin-top:0;border-radius:8px;border:none;cursor:pointer;font-family:"Outfit",sans-serif;font-weight:600;}
+.badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600;}
+.badge-r{background:rgba(16,185,129,.15);color:var(--r);border:1px solid var(--r);}
+.badge-g{background:rgba(34,211,238,.15);color:var(--g);border:1px solid var(--g);}
+.badge-b{background:rgba(41,121,255,.15);color:var(--blue);border:1px solid var(--blue);}
+.badge-y{background:rgba(255,214,0,.15);color:var(--yellow);border:1px solid var(--yellow);}
+.badge-o{background:rgba(255,107,0,.15);color:var(--o);border:1px solid var(--o);}
+.stat-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #252525;}
+.stat-row:last-child{border-bottom:none;}
+.stat-label{font-size:13px;color:var(--sub);}
+.stat-val{font-weight:700;color:var(--r);font-family:"Outfit",sans-serif;font-size:16px;}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;}
+#toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#222;color:#fff;padding:10px 22px;border-radius:12px;border:1px solid var(--r);font-size:13px;z-index:9999;display:none;min-width:220px;text-align:center;box-shadow:0 4px 20px rgba(16,185,129,.3);}
+/* Auth */
+.auth-wrap{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px 16px;position:relative;overflow:hidden;background:
+  radial-gradient(560px 360px at 50% -8%,rgba(16,185,129,.16),transparent 70%),
+  radial-gradient(420px 320px at 90% 100%,rgba(16,185,129,.08),transparent 70%),
+  var(--dark);}
+.auth-logo-mark{width:60px;height:60px;border-radius:18px;background:linear-gradient(135deg,var(--r),var(--r2));display:flex;align-items:center;justify-content:center;font-size:30px;margin:0 auto 16px;box-shadow:0 12px 32px -10px var(--glow);}
+.auth-logo-big{font-family:"Outfit",sans-serif;font-size:25px;color:var(--text);font-weight:700;letter-spacing:-.01em;text-align:center;margin-bottom:6px;}
+.auth-logo-big b{color:var(--r);font-weight:700;}
+.auth-tagline{font-size:13px;color:var(--sub);text-align:center;margin-bottom:26px;}
+.auth-card{background:rgba(19,24,26,.8);backdrop-filter:blur(14px);border:1px solid var(--line);border-radius:22px;box-shadow:0 24px 60px -20px rgba(0,0,0,.7);}
+.field-icon{position:relative;}
+.field-icon span{position:absolute;left:14px;top:50%;transform:translateY(calc(-50% + 9px));font-size:14px;opacity:.55;pointer-events:none;}
+.field-icon input{padding-left:38px;}
+.google-btn{display:flex;align-items:center;justify-content:center;gap:10px;background:#fff;color:#333;border-radius:12px;padding:13px;font-family:"Inter",sans-serif;font-size:14px;font-weight:600;cursor:pointer;border:none;width:100%;margin-top:0;transition:.2s;box-shadow:0 8px 20px -10px rgba(0,0,0,.5);}
+.google-btn:hover{background:#f5f5f5;transform:translateY(-1px);}
+.divider{display:flex;align-items:center;gap:10px;margin:16px 0;color:var(--sub);font-size:12px;}
+.divider::before,.divider::after{content:"";flex:1;height:1px;background:var(--line);}
+.role-card{border:1.5px solid #2a2e2e;border-radius:14px;padding:12px;cursor:pointer;transition:.2s;text-align:center;}
+.role-card:hover,.role-card.selected{border-color:var(--r);background:rgba(16,185,129,.07);}
+.role-icon{font-size:28px;margin-bottom:4px;}
+.role-name{font-family:"Outfit",sans-serif;font-size:14px;font-weight:600;color:var(--text);}
+.role-desc{font-size:10px;color:var(--sub);margin-top:2px;}
+/* Mapa */
+.map-wrapper{width:100%;border-radius:12px;overflow:hidden;margin-bottom:10px;border:1px solid #252525;}
+/* Restaurante cards */
+.rest-card{background:var(--card2);border:1px solid #252525;border-radius:14px;padding:14px;margin-bottom:10px;cursor:pointer;transition:.2s;}
+.rest-card:hover{border-color:var(--r);}
+.rest-logo{width:60px;height:60px;border-radius:12px;object-fit:cover;background:#333;border:2px solid var(--r);flex-shrink:0;}
+.rest-name{font-family:"Outfit",sans-serif;font-size:17px;font-weight:700;color:var(--r);}
+.rest-meta{font-size:12px;color:var(--sub);margin-top:2px;}
+/* Menu */
+.menu-item{background:var(--card2);border:1px solid #252525;border-radius:12px;padding:12px;margin-bottom:8px;display:flex;gap:10px;align-items:center;}
+.menu-item img{width:60px;height:60px;border-radius:10px;object-fit:cover;background:#333;flex-shrink:0;}
+.menu-item-name{font-weight:700;font-size:14px;}
+.menu-item-desc{font-size:12px;color:var(--sub);margin-top:2px;}
+.menu-item-price{font-family:"Outfit",sans-serif;font-size:17px;color:var(--r);font-weight:700;}
+/* Carrito */
+.cart-item{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #252525;}
+.cart-item:last-child{border-bottom:none;}
+/* Pedido */
+.order-card{background:var(--card2);border:1px solid #252525;border-radius:14px;padding:14px;margin-bottom:10px;}
+.os-bar{display:flex;gap:3px;margin:8px 0;}
+.os-step{flex:1;height:4px;border-radius:4px;background:#333;}
+.os-step.done{background:var(--r);}
+/* Chat */
+.chat-box{height:180px;overflow-y:auto;background:#111;padding:10px;border-radius:10px;margin-top:8px;border:1px solid #252525;}
+.msg{padding:7px 11px;border-radius:10px;margin-bottom:7px;background:#2a2a2a;font-size:13px;max-width:85%;}
+.msg b{font-size:11px;color:var(--sub);display:block;margin-bottom:2px;}
+.msg.me{background:rgba(16,185,129,.2);border:1px solid var(--r);margin-left:auto;}
+.msg.me b{color:var(--r);}
+/* GPS */
+.gps-status{display:inline-flex;align-items:center;gap:6px;padding:5px 12px;border-radius:20px;font-size:12px;font-weight:700;font-family:"Outfit",sans-serif;margin-bottom:10px;}
+.gps-on{background:rgba(0,230,118,.12);border:1px solid var(--g);color:var(--g);}
+.gps-off{background:rgba(255,23,68,.12);border:1px solid var(--red);color:var(--red);}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+.gps-dot{width:8px;height:8px;border-radius:50%;animation:pulse 1.2s infinite;}
+.gps-on .gps-dot{background:var(--g);}
+.gps-off .gps-dot{background:var(--red);animation:none;}
+/* Modal */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:900;align-items:flex-end;justify-content:center;}
+.modal-overlay.open{display:flex;}
+.modal-sheet{background:#181818;border-radius:20px 20px 0 0;width:100%;max-width:620px;max-height:92vh;overflow-y:auto;padding:20px;}
+.modal-handle{width:40px;height:4px;background:#333;border-radius:4px;margin:0 auto 16px;}
+.modal-title{font-family:"Outfit",sans-serif;font-size:20px;font-weight:700;color:var(--r);margin-bottom:14px;}
+/* Sucursal pill */
+.suc-pill{display:inline-block;padding:4px 11px;border-radius:20px;border:1px solid #333;font-size:11px;cursor:pointer;margin:3px;background:#111;transition:.2s;}
+.suc-pill.active,.suc-pill:hover{background:var(--r);color:#fff;border-color:var(--r);}
+/* Foto preview */
+.foto-preview{width:80px;height:80px;border-radius:12px;object-fit:cover;border:2px solid var(--r);background:#222;display:none;margin:8px auto 0;display:block;}
+/* Tabla resumen diario */
+.daily-table{width:100%;border-collapse:collapse;font-size:13px;margin-top:8px;}
+.daily-table th{background:#222;color:var(--sub);font-size:11px;text-align:left;padding:8px 10px;border-bottom:1px solid #333;text-transform:uppercase;letter-spacing:.5px;}
+.daily-table td{padding:8px 10px;border-bottom:1px solid #1c1c1c;vertical-align:middle;}
+.daily-table tr:last-child td{border-bottom:none;}
+/* Sec title */
+.sec-title{font-family:"Outfit",sans-serif;font-size:20px;font-weight:700;color:var(--r);margin:16px 0 10px;}
+/* Info box */
+.info-box{background:rgba(16,185,129,.08);border:1px solid rgba(16,185,129,.25);border-radius:10px;padding:10px 14px;font-size:12px;color:#ccc;margin-bottom:10px;}
+.info-box b{color:var(--r);}
+</style>
+</head>
+<body>
+
+<div id="toast"></div>
+
+<!-- NAV -->
+<nav class="nav" id="mainNav" style="display:none">
+  <div class="logo" style="font-size:15px;"><span class="logo-badge">🛵</span>Robs Delivery <span style="color:var(--r);">Express</span></div>
+  <div class="nav-right">
+    <div class="nav-tabs" id="navTabs"></div>
+    <button class="btn-logout" id="btnLogout">Salir</button>
+  </div>
+</nav>
+
+<!-- ══════════════════ AUTH ══════════════════ -->
+<div id="authSection" class="section active">
+  <div class="auth-wrap">
+    <div style="width:100%;max-width:460px;">
+      <div class="auth-logo-mark">🛵</div>
+      <div class="auth-logo-big">Robs Delivery <b>Express</b></div>
+      <div class="auth-tagline">Tu comida favorita a domicilio</div>
+      <div class="card auth-card" id="authCard" style="max-width:460px;">
+        <div class="card-title" id="authCardTitle">Iniciar sesión</div>
+
+        <button class="google-btn" id="btnGoogleLogin">
+          <svg viewBox="0 0 48 48" width="20" height="20"><path fill="#EA4335" d="M24 9.5c3.14 0 5.95 1.08 8.17 2.86l6.09-6.09C34.34 3.07 29.46 1 24 1 14.82 1 7.06 6.48 3.64 14.2l7.1 5.52C12.52 13.27 17.82 9.5 24 9.5z"/><path fill="#4285F4" d="M46.14 24.5c0-1.64-.15-3.22-.42-4.75H24v9h12.42c-.54 2.9-2.18 5.36-4.65 7.02l7.18 5.58C43.38 37.3 46.14 31.35 46.14 24.5z"/><path fill="#FBBC05" d="M10.74 28.28A14.56 14.56 0 0 1 9.5 24c0-1.49.26-2.94.72-4.3l-7.1-5.52A23.94 23.94 0 0 0 0 24c0 3.87.93 7.52 2.56 10.74l8.18-6.46z"/><path fill="#34A853" d="M24 47c5.46 0 10.04-1.81 13.38-4.9l-7.18-5.58C28.46 38.07 26.36 38.5 24 38.5c-6.18 0-11.42-3.77-13.26-9.22l-8.18 6.46C6.06 43.52 14.46 47 24 47z"/></svg>
+          Continuar con Google
+        </button>
+
+        <div class="divider">o con email y contraseña</div>
+
+        <!-- Campos registro -->
+        <div id="registerFields" style="display:none">
+          <!-- Selector de rol -->
+          <div id="roleSelector">
+            <label>Tipo de cuenta</label>
+            <div class="grid3" style="gap:8px;margin-top:8px;margin-bottom:8px;">
+              <div class="role-card selected" id="roleCliente" onclick="selRole('cliente')">
+                <div class="role-icon">🙋</div><div class="role-name">Cliente</div><div class="role-desc">Pido comida</div>
+              </div>
+              <div class="role-card" id="roleResto" onclick="selRole('restaurante')">
+                <div class="role-icon">🍽️</div><div class="role-name">Negocio</div><div class="role-desc">Vendo comida</div>
+              </div>
+              <div class="role-card" id="roleMoto" onclick="selRole('motociclista')">
+                <div class="role-icon">🏍️</div><div class="role-name">Repartidor</div><div class="role-desc">Delivery</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Comunes -->
+          <label>Nombre completo</label>
+          <input type="text" id="regNombre" placeholder="Tu nombre completo">
+          <label>Teléfono</label>
+          <input type="tel" id="regTel" placeholder="+591 70000000">
+
+          <!-- ─── CAMPOS RESTAURANTE / NEGOCIO ─── -->
+          <div id="restoFields" style="display:none">
+            <div style="background:rgba(16,185,129,.07);border:1px solid rgba(16,185,129,.2);border-radius:10px;padding:12px;margin-top:10px;">
+              <div style="font-family:'Outfit',sans-serif;font-size:14px;color:var(--r);font-weight:700;margin-bottom:8px;">📋 DATOS DEL NEGOCIO</div>
+
+              <label>Foto / Logo del negocio</label>
+              <input type="file" id="restoFotoFile" accept="image/*" onchange="previewFoto(this,'restoFotoPreview')">
+              <img id="restoFotoPreview" src="" alt="" class="foto-preview" style="display:none;margin-top:6px;">
+
+              <label>Nombre comercial</label>
+              <input type="text" id="restoNombreComercial" placeholder="Ej: Burger Express">
+
+              <label>Tipo de persona</label>
+              <select id="restoTipoPersona" onchange="togglePersonaJuridica()">
+                <option value="natural">Persona Natural</option>
+                <option value="juridica">Persona Jurídica</option>
+              </select>
+
+              <div id="juridicaFields" style="display:none">
+                <label>Nombre jurídico / Razón social</label>
+                <input type="text" id="restoRazonSocial" placeholder="Ej: Inversiones Rob S.A.">
+              </div>
+
+              <label>Nombre del representante / Encargado</label>
+              <input type="text" id="restoRepresentante" placeholder="Nombre del responsable">
+
+              <label>Dirección del negocio</label>
+              <input type="text" id="restoDireccion" placeholder="Calle, número, referencia">
+
+              <label>Teléfono del negocio</label>
+              <input type="tel" id="restoTelNegocio" placeholder="+591 70000000">
+
+              <label>Tipo de cocina / Comida</label>
+              <select id="restoCocina">
+                <option value="">-- Selecciona --</option>
+                <optgroup label="América del Norte">
+                  <option value="americana">🇺🇸 Americana</option>
+                  <option value="canadiense">🇨🇦 Canadiense</option>
+                  <option value="mexicana">🇲🇽 Mexicana</option>
+                </optgroup>
+                <optgroup label="América Central">
+                  <option value="guatemalteca">🇬🇹 Guatemalteca</option>
+                  <option value="salvadorena">🇸🇻 Salvadoreña</option>
+                  <option value="hondurena">🇭🇳 Hondureña</option>
+                  <option value="nicaraguense">🇳🇮 Nicaragüense</option>
+                  <option value="costarricense">🇨🇷 Costarricense</option>
+                  <option value="panamena">🇵🇦 Panameña</option>
+                  <option value="belicena">🇧🇿 Beliceña</option>
+                </optgroup>
+                <optgroup label="El Caribe">
+                  <option value="cubana">🇨🇺 Cubana</option>
+                  <option value="dominicana">🇩🇴 Dominicana</option>
+                  <option value="puertorriquena">🇵🇷 Puertorriqueña</option>
+                  <option value="jamaicana">🇯🇲 Jamaicana</option>
+                  <option value="haitiana">🇭🇹 Haitiana</option>
+                  <option value="trinitaria">🇹🇹 Trinitaria</option>
+                </optgroup>
+                <optgroup label="América del Sur">
+                  <option value="colombiana">🇨🇴 Colombiana</option>
+                  <option value="venezolana">🇻🇪 Venezolana</option>
+                  <option value="ecuatoriana">🇪🇨 Ecuatoriana</option>
+                  <option value="peruana">🇵🇪 Peruana</option>
+                  <option value="boliviana">🇧🇴 Boliviana</option>
+                  <option value="chilena">🇨🇱 Chilena</option>
+                  <option value="argentina">🇦🇷 Argentina</option>
+                  <option value="uruguaya">🇺🇾 Uruguaya</option>
+                  <option value="paraguaya">🇵🇾 Paraguaya</option>
+                  <option value="brasilena">🇧🇷 Brasileña</option>
+                  <option value="guyanesa">🇬🇾 Guyanesa</option>
+                  <option value="surinamesa">🇸🇷 Surinamesa</option>
+                </optgroup>
+                <optgroup label="Europa">
+                  <option value="italiana">🇮🇹 Italiana</option>
+                  <option value="francesa">🇫🇷 Francesa</option>
+                  <option value="espanola">🇪🇸 Española</option>
+                  <option value="griega">🇬🇷 Griega</option>
+                  <option value="alemana">🇩🇪 Alemana</option>
+                  <option value="portuguesa">🇵🇹 Portuguesa</option>
+                </optgroup>
+                <optgroup label="Asia">
+                  <option value="china">🇨🇳 China</option>
+                  <option value="japonesa">🇯🇵 Japonesa / Sushi</option>
+                  <option value="coreana">🇰🇷 Coreana</option>
+                  <option value="tailandesa">🇹🇭 Tailandesa</option>
+                  <option value="india">🇮🇳 India</option>
+                  <option value="arabe">🌙 Árabe / Medio Oriente</option>
+                </optgroup>
+                <optgroup label="Categorías especiales">
+                  <option value="pizza">🍕 Pizzería</option>
+                  <option value="hamburguesas">🍔 Hamburguesas</option>
+                  <option value="mariscos">🦞 Mariscos / Ceviche</option>
+                  <option value="pollo">🍗 Pollo / Parrilla</option>
+                  <option value="desayunos">🍳 Desayunos / Brunch</option>
+                  <option value="helados">🍦 Helados / Postres</option>
+                  <option value="saludable">🥗 Saludable / Vegano</option>
+                  <option value="cafe">☕ Cafetería / Pastelería</option>
+                  <option value="otro">🍽️ Otro</option>
+                </optgroup>
+              </select>
+
+              <label>Sitio web (opcional)</label>
+              <input type="url" id="restoWeb" placeholder="https://www.minegocio.com">
+
+              <label>Link de pago (donde clientes pagan)</label>
+              <input type="url" id="restoLinkPago" placeholder="https://pagos.ejemplo.com/minegocio">
+              <div style="font-size:11px;color:var(--sub);margin-top:4px;">Puede incluir o no el costo de delivery. Los clientes serán redirigidos aquí para pagar.</div>
+
+              <label>Email del negocio</label>
+              <input type="email" id="restoEmailNegocio" placeholder="negocio@ejemplo.com">
+            </div>
+          </div>
+
+          <!-- ─── CAMPOS MOTOCICLISTA ─── -->
+          <div id="motoFields" style="display:none">
+            <label>Placa de la moto</label>
+            <input type="text" id="motoPlaca" placeholder="Ej: 12345-BO">
+            <label>Marca / Modelo</label>
+            <input type="text" id="motoModelo" placeholder="Ej: Honda Wave 110">
+            <div class="info-box" style="margin-top:10px;">
+              <b>Comisión:</b> ROBS DELIVERY EXPRESS cobra el <b>5%</b> del total diario de tus entregas. El costo de delivery por viaje es <b>$0.75</b> que corre a cargo del cliente.
+            </div>
+          </div>
+        </div>
+
+        <label>Email</label>
+        <div class="field-icon"><span>✉️</span><input type="email" id="authEmail" placeholder="correo@ejemplo.com"></div>
+        <label>Contraseña</label>
+        <div class="field-icon"><span>🔒</span><input type="password" id="authPass" placeholder="••••••"></div>
+        <button class="btn" id="authBtn" onclick="doAuth()">Ingresar</button>
+        <button style="background:none;border:none;color:var(--r);font-size:13px;text-decoration:none;margin-top:12px;width:100%;cursor:pointer;font-weight:500;" id="btnToggleReg" onclick="toggleReg()">¿No tienes cuenta? Regístrate</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════ CLIENTE ══════════════════ -->
+<div id="clienteSection" class="section">
+  <div class="container">
+    <div class="card">
+      <div class="card-title">🍔 ¿Qué quieres comer hoy?</div>
+      <input type="text" id="cliBuscador" placeholder="Buscar restaurante, comida..." oninput="filtrarRestos()">
+      <div style="display:flex;gap:6px;margin-top:10px;overflow-x:auto;padding-bottom:4px;" id="catFiltros"></div>
+    </div>
+    <div id="listaRestos"></div>
+    <div id="carritoBar" style="display:none;position:sticky;bottom:12px;z-index:200;">
+      <button class="btn" onclick="abrirCarrito()" style="box-shadow:0 6px 24px rgba(16,185,129,.45);">
+        🛒 Ver carrito · <span id="carritoCount">0</span> ítem(s) · $<span id="carritoTotal">0</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════ MIS PEDIDOS (CLIENTE) ══════════════════ -->
+<div id="pedidosSection" class="section">
+  <div class="container">
+    <div class="sec-title">📦 Mis Pedidos</div>
+    <div id="listaPedidosCli"></div>
+  </div>
+</div>
+
+<!-- ══════════════════ RESTAURANTE PANEL ══════════════════ -->
+<div id="restauranteSection" class="section">
+  <div class="container">
+
+    <!-- Info y tarifas -->
+    <div class="info-box">
+      <b>Cuota mensual:</b> $30.00 · <b>Por viaje delivery:</b> $0.75 (cobrado al cliente)<br>
+      Tu resumen financiero se actualiza diariamente aquí abajo.
+    </div>
+
+    <!-- Tabs internos restaurante -->
+    <div style="display:flex;gap:6px;margin-bottom:12px;overflow-x:auto;padding-bottom:4px;">
+      <button class="btn-xs btn" id="rtab_pedidos" onclick="restoTab('pedidos')">🔔 Pedidos</button>
+      <button class="btn-xs" id="rtab_resumen" onclick="restoTab('resumen')" style="background:#222;color:#aaa;border:1px solid #333;">📊 Resumen diario</button>
+      <button class="btn-xs" id="rtab_menu" onclick="restoTab('menu')" style="background:#222;color:#aaa;border:1px solid #333;">📋 Menú</button>
+      <button class="btn-xs" id="rtab_sucursales" onclick="restoTab('sucursales')" style="background:#222;color:#aaa;border:1px solid #333;">📍 Sucursales</button>
+      <button class="btn-xs" id="rtab_perfil" onclick="restoTab('perfil')" style="background:#222;color:#aaa;border:1px solid #333;">⚙️ Perfil</button>
+    </div>
+
+    <!-- Pedidos entrantes -->
+    <div id="rpanel_pedidos">
+      <div class="card">
+        <div class="card-title">🔔 Pedidos Entrantes</div>
+        <div id="pedidosResto"></div>
+      </div>
+    </div>
+
+    <!-- Resumen diario -->
+    <div id="rpanel_resumen" style="display:none">
+      <div class="card">
+        <div class="card-title">📊 Resumen por Día</div>
+        <div class="grid3" style="gap:8px;margin-bottom:12px;">
+          <div style="background:#111;border-radius:10px;padding:10px;text-align:center;">
+            <div style="font-size:22px;font-weight:700;color:var(--r);font-family:'Outfit',sans-serif;" id="rs_viajes">0</div>
+            <div style="font-size:10px;color:var(--sub);">Viajes hoy</div>
+          </div>
+          <div style="background:#111;border-radius:10px;padding:10px;text-align:center;">
+            <div style="font-size:22px;font-weight:700;color:var(--g);font-family:'Outfit',sans-serif;" id="rs_delivery">$0</div>
+            <div style="font-size:10px;color:var(--sub);">Por delivery</div>
+          </div>
+          <div style="background:#111;border-radius:10px;padding:10px;text-align:center;">
+            <div style="font-size:22px;font-weight:700;color:var(--yellow);font-family:'Outfit',sans-serif;" id="rs_ventas">$0</div>
+            <div style="font-size:10px;color:var(--sub);">Ventas comida</div>
+          </div>
+        </div>
+        <div id="resumenDiarioTabla">
+          <table class="daily-table">
+            <thead><tr><th>Fecha</th><th>Viajes</th><th>Monto delivery</th><th>Ventas comida</th></tr></thead>
+            <tbody id="resumenDiarioBody"><tr><td colspan="4" style="color:var(--sub);text-align:center;padding:20px;">Cargando...</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Menú -->
+    <div id="rpanel_menu" style="display:none">
+      <div class="card">
+        <div class="card-title">📋 Mi Menú</div>
+        <div id="menuAdmin"></div>
+        <button class="btn" onclick="abrirModalMenu()" style="margin-top:10px;">+ Agregar Producto</button>
+      </div>
+    </div>
+
+    <!-- Sucursales -->
+    <div id="rpanel_sucursales" style="display:none">
+      <div class="card">
+        <div class="card-title">📍 Mis Sucursales <span style="font-size:12px;color:var(--sub);font-family:'Inter';">(máx. 51: 1 principal + 50)</span></div>
+        <div id="sucursalesList"></div>
+        <button class="btn" onclick="abrirModalSucursal()" style="margin-top:10px;" id="btnAgregarSuc">+ Agregar Sucursal</button>
+      </div>
+    </div>
+
+    <!-- Perfil negocio -->
+    <div id="rpanel_perfil" style="display:none">
+      <div class="card">
+        <div class="card-title">⚙️ Perfil del Negocio</div>
+        <div id="restoPerfil"></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══════════════════ MOTOCICLISTA ══════════════════ -->
+<div id="motoSection" class="section">
+  <div class="container">
+    <div class="card">
+      <div class="card-title">🏍️ Mi Panel</div>
+      <div id="motoGpsStatus" class="gps-status gps-off"><span class="gps-dot"></span>GPS Apagado</div>
+      <div class="grid3" style="gap:6px;">
+        <div style="background:#111;border-radius:10px;padding:10px;text-align:center;">
+          <div style="font-size:20px;font-weight:700;color:var(--r);font-family:'Outfit',sans-serif;" id="motoGanancias">$0</div>
+          <div style="font-size:10px;color:var(--sub);">Ganancias hoy</div>
+        </div>
+        <div style="background:#111;border-radius:10px;padding:10px;text-align:center;">
+          <div style="font-size:20px;font-weight:700;color:var(--g);font-family:'Outfit',sans-serif;" id="motoEntregas">0</div>
+          <div style="font-size:10px;color:var(--sub);">Entregas hoy</div>
+        </div>
+        <div style="background:#111;border-radius:10px;padding:10px;text-align:center;">
+          <div style="font-size:20px;font-weight:700;color:var(--yellow);font-family:'Outfit',sans-serif;" id="motoComision">$0</div>
+          <div style="font-size:10px;color:var(--sub);">Comisión 5%</div>
+        </div>
+      </div>
+      <div id="motoMapWrapper" class="map-wrapper" style="margin-top:10px;height:200px;display:none;">
+        <div id="motoMapEl" style="height:200px;"></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">📬 Pedidos Disponibles</div>
+      <div id="pedidosMoto"></div>
+    </div>
+    <div id="motoActiveCard" style="display:none;" class="card">
+      <div class="card-title">🚀 Entrega Activa</div>
+      <div id="motoActiveInfo"></div>
+      <div id="activaMapWrapper" class="map-wrapper" style="height:220px;">
+        <div id="activaMapEl" style="height:220px;"></div>
+      </div>
+      <div class="grid2" style="gap:8px;margin-top:8px;">
+        <button class="btn-g btn" onclick="marcarRecogido()">✅ RECOGIDO</button>
+        <button class="btn btn-red" onclick="marcarEntregado()">🏁 ENTREGADO</button>
+      </div>
+      <div class="chat-box" id="motoChatBox"></div>
+      <div style="display:flex;gap:8px;margin-top:8px;">
+        <input type="text" id="motoChatInput" placeholder="Mensaje al cliente..." style="margin-top:0;">
+        <button class="btn btn-sm" onclick="enviarMsgMoto()" style="width:auto;margin-top:0;">Enviar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════ ADMIN ══════════════════ -->
+<div id="adminSection" class="section">
+  <div class="container">
+    <div class="sec-title">⚙️ Panel Admin — ROBS DELIVERY EXPRESS</div>
+    <div class="grid2" style="gap:8px;margin-bottom:12px;">
+      <div class="card" style="margin-bottom:0;text-align:center;">
+        <div style="font-size:26px;font-weight:700;color:var(--r);font-family:'Outfit',sans-serif;" id="adm_clientes">0</div>
+        <div style="font-size:11px;color:var(--sub);">Clientes</div>
+      </div>
+      <div class="card" style="margin-bottom:0;text-align:center;">
+        <div style="font-size:26px;font-weight:700;color:var(--g);font-family:'Outfit',sans-serif;" id="adm_restos">0</div>
+        <div style="font-size:11px;color:var(--sub);">Restaurantes</div>
+      </div>
+      <div class="card" style="margin-bottom:0;text-align:center;">
+        <div style="font-size:26px;font-weight:700;color:var(--blue);font-family:'Outfit',sans-serif;" id="adm_motos">0</div>
+        <div style="font-size:11px;color:var(--sub);">Repartidores</div>
+      </div>
+      <div class="card" style="margin-bottom:0;text-align:center;">
+        <div style="font-size:26px;font-weight:700;color:var(--yellow);font-family:'Outfit',sans-serif;" id="adm_pedidos">0</div>
+        <div style="font-size:11px;color:var(--sub);">Pedidos hoy</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">🔍 Buscar usuarios</div>
+      <div style="display:flex;gap:8px;">
+        <input type="text" id="admBuscador" placeholder="Nombre o email..." style="margin-top:0;">
+        <button class="btn btn-sm" onclick="buscarUsuarios()" style="width:auto;margin-top:0;">Buscar</button>
+      </div>
+      <div id="admResultados" style="margin-top:10px;"></div>
+    </div>
+    <div class="card">
+      <div class="card-title">📋 Pedidos recientes</div>
+      <div id="admPedidos"></div>
+    </div>
+    <div class="card">
+      <div class="card-title">🍽️ Restaurantes / Negocios</div>
+      <div id="admRestos"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ MODAL: DETALLE RESTAURANTE ══ -->
+<div class="modal-overlay" id="modalResto">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div id="modalRestoContenido"></div>
+    <button class="btn-red btn" style="margin-top:12px;" onclick="cerrarModal('modalResto')">Cerrar</button>
+  </div>
+</div>
+
+<!-- ══ MODAL: CARRITO ══ -->
+<div class="modal-overlay" id="modalCarrito">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-title">🛒 Tu Carrito</div>
+    <div id="carritoItems"></div>
+    <label>Dirección de entrega</label>
+    <input type="text" id="direccionEntrega" placeholder="Tu dirección completa">
+    <button class="btn-blue btn btn-sm" onclick="usarGPSEntrega()" style="margin-top:6px;width:auto;">📍 Usar mi GPS</button>
+    <div id="entregaMapWrapper" class="map-wrapper" style="height:180px;display:none;margin-top:8px;">
+      <div id="entregaMapEl" style="height:180px;"></div>
+    </div>
+    <label>Notas para el restaurante</label>
+    <textarea id="notasPedido" placeholder="Sin cebolla, sin picante, instrucciones especiales..."></textarea>
+    <div class="stat-row" style="margin-top:10px;">
+      <span class="stat-label">Subtotal comida</span>
+      <span class="stat-val">$<span id="carritoTotalModal">0</span></span>
+    </div>
+    <div class="stat-row">
+      <span class="stat-label">Costo de delivery</span>
+      <span style="font-family:'Outfit',sans-serif;font-weight:700;color:var(--g);">$0.75</span>
+    </div>
+    <div class="stat-row">
+      <span class="stat-label" style="font-weight:700;">TOTAL</span>
+      <span class="stat-val" style="font-size:20px;">$<span id="carritoTotalFinal">0</span></span>
+    </div>
+    <button class="btn" onclick="confirmarPedido()" style="margin-top:12px;">✅ CONFIRMAR PEDIDO</button>
+    <button class="btn-red btn" style="margin-top:6px;" onclick="cerrarModal('modalCarrito')">Cancelar</button>
+  </div>
+</div>
+
+<!-- ══ MODAL: PEDIDO ACTIVO (CLIENTE) ══ -->
+<div class="modal-overlay" id="modalPedidoActivo">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-title">📦 Estado de tu Pedido</div>
+    <div id="pedidoActivoInfo"></div>
+    <div id="pedidoActivoMapWrapper" class="map-wrapper" style="height:200px;display:none;">
+      <div id="pedidoActivoMapEl" style="height:200px;"></div>
+    </div>
+    <div class="chat-box" id="cliChatBox"></div>
+    <div style="display:flex;gap:8px;margin-top:8px;">
+      <input type="text" id="cliChatInput" placeholder="Mensaje al repartidor..." style="margin-top:0;">
+      <button class="btn btn-sm" onclick="enviarMsgCli()" style="width:auto;margin-top:0;">Enviar</button>
+    </div>
+    <button class="btn-red btn" style="margin-top:10px;" onclick="cancelarPedidoCli()">❌ Cancelar Pedido</button>
+    <button style="background:#222;color:#aaa;margin-top:6px;" onclick="cerrarModal('modalPedidoActivo')">Cerrar</button>
+  </div>
+</div>
+
+<!-- ══ MODAL: NUEVA SUCURSAL ══ -->
+<div class="modal-overlay" id="modalSucursal">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-title">📍 Nueva Sucursal</div>
+    <label>Nombre de la sucursal</label>
+    <input type="text" id="sucNombre" placeholder="Ej: Sucursal Centro / Sucursal Principal">
+    <label>Dirección</label>
+    <input type="text" id="sucDireccion" placeholder="Calle, número, zona">
+    <label>Ciudad</label>
+    <input type="text" id="sucCiudad" placeholder="Ej: La Paz">
+    <label>Teléfono de esta sucursal</label>
+    <input type="tel" id="sucTel" placeholder="+591 22000000">
+    <label>Radio de cobertura (km)</label>
+    <input type="number" id="sucCobertura" value="5" min="1" max="50">
+    <label>Horario de atención</label>
+    <input type="text" id="sucHorario" placeholder="Ej: Lun-Vie 8:00-22:00 / Sáb-Dom 9:00-23:00">
+    <div style="margin-top:10px;font-size:12px;color:var(--sub);margin-bottom:6px;font-weight:700;text-transform:uppercase;">Coordenadas GPS</div>
+    <div id="sucMapWrapper" class="map-wrapper" style="height:220px;">
+      <div id="sucMapEl" style="height:220px;"></div>
+    </div>
+    <div class="grid2" style="gap:8px;">
+      <div><label>Latitud</label><input type="number" id="sucLat" placeholder="-16.500000" step="0.000001"></div>
+      <div><label>Longitud</label><input type="number" id="sucLng" placeholder="-68.150000" step="0.000001"></div>
+    </div>
+    <button class="btn-blue btn btn-sm" onclick="usarGPSSucursal()" style="margin-top:6px;width:auto;">📍 Usar mi GPS actual</button>
+    <button class="btn" onclick="guardarSucursal()" style="margin-top:12px;">GUARDAR SUCURSAL</button>
+    <button class="btn-red btn" style="margin-top:6px;" onclick="cerrarModal('modalSucursal')">Cancelar</button>
+  </div>
+</div>
+
+<!-- ══ MODAL: PRODUCTO MENÚ ══ -->
+<div class="modal-overlay" id="modalMenu">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-title">🍽️ Producto del Menú</div>
+    <label>Nombre del producto</label>
+    <input type="text" id="menuNombre" placeholder="Ej: Pizza Margarita Grande">
+    <label>Descripción</label>
+    <input type="text" id="menuDesc" placeholder="Ej: Tomate, mozzarella, albahaca fresca">
+    <label>Precio ($)</label>
+    <input type="number" id="menuPrecio" placeholder="0.00" min="0" step="0.50">
+    <label>Categoría</label>
+    <select id="menuCat">
+      <option value="plato">🍽️ Plato principal / Comida</option>
+      <option value="entrada">🥗 Entrada / Aperitivo</option>
+      <option value="postre">🍰 Postre</option>
+      <option value="bebida">🥤 Bebida (sin alcohol)</option>
+      <option value="cerveza">🍺 Cerveza</option>
+      <option value="vino">🍷 Vino</option>
+      <option value="licor">🥃 Licor / Destilado</option>
+      <option value="combo">🎁 Combo / Menú del día</option>
+      <option value="extra">➕ Extra / Adición</option>
+      <option value="otro">🔘 Otro</option>
+    </select>
+    <label>URL de imagen (opcional)</label>
+    <input type="url" id="menuImg" placeholder="https://... (link de imagen del plato)">
+    <label>Disponible</label>
+    <select id="menuDisponible">
+      <option value="true">✅ Sí — disponible para pedir</option>
+      <option value="false">❌ No — temporalmente no disponible</option>
+    </select>
+    <button class="btn" onclick="guardarMenuItem()" style="margin-top:12px;">GUARDAR PRODUCTO</button>
+    <button class="btn-red btn" style="margin-top:6px;" onclick="cerrarModal('modalMenu')">Cancelar</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════ FIREBASE + LÓGICA ══════════════════════════ -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-analytics.js";
+import {
+  getAuth, signInWithPopup, GoogleAuthProvider,
+  createUserWithEmailAndPassword, signInWithEmailAndPassword,
+  signOut, onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import {
+  getFirestore, doc, setDoc, getDoc, addDoc, updateDoc, deleteDoc,
+  collection, onSnapshot, query, where, orderBy, getDocs, limit
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+// ══ FIREBASE CONFIG — ROBS DELIVERY EXPRESS ══
+const firebaseConfig = {
+  apiKey:            "AIzaSyCzh6E0mZjJzxSFjFI1D_afFkVhlzReDT0",
+  authDomain:        "robsdeliveryexpress.firebaseapp.com",
+  databaseURL:       "https://robsdeliveryexpress-default-rtdb.firebaseio.com",
+  projectId:         "robsdeliveryexpress",
+  storageBucket:     "robsdeliveryexpress.firebasestorage.app",
+  messagingSenderId: "791516516056",
+  appId:             "1:791516516056:web:5b503abbd556be8d1651ad",
+  measurementId:     "G-Q349E5WQ5X"
+};
+// ═══════════════════════════════════════════════
+
+const app  = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);
+const auth = getAuth(app);
+const db   = getFirestore(app);
+const gprov = new GoogleAuthProvider();
+
+// ─── Estado global ───
+let miUid="",miRol="",miNombre="",miEmail="";
+let miLat=null,miLng=null;
+let carrito=[],carritoRestoId="",carritoRestoNombre="",carritoRestoLinkPago="";
+let currentPedidoId=null;
+let motoWatchId=null,motoMap=null,motoMarker=null;
+let activaMap=null,activaMarkerMoto=null,activaMarkerDest=null;
+let pedidoActivoMap=null,cliMarkerMoto=null;
+let sucMap=null,sucMarker=null;
+let entregaMap=null,entregaMarker=null,entregaLat=null,entregaLng=null;
+let unsubMoto=null,unsubCliPedido=null,unsubMotoChat=null,unsubCliChat=null;
+let isRegister=false,rolSeleccionado="cliente";
+const DELIVERY_FEE=0.75;
+const MOTO_COMISION=0.05;
+const CUOTA_MENSUAL_RESTO=30;
+
+// ─── Helpers ───
+const gi=id=>document.getElementById(id);
+const esc=s=>String(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+function toast(msg,ms=3500){const t=gi("toast");t.innerText=msg;t.style.display="block";clearTimeout(t._t);t._t=setTimeout(()=>t.style.display="none",ms);}
+function cerrarModal(id){gi(id).classList.remove("open");}
+function abrirModal(id){gi(id).classList.add("open");}
+window.cerrarModal=cerrarModal;
+
+// ─── Foto preview ───
+window.previewFoto=function(input,previewId){
+  const file=input.files[0];if(!file)return;
+  const reader=new FileReader();
+  reader.onload=e=>{const img=gi(previewId);if(img){img.src=e.target.result;img.style.display="block";}};
+  reader.readAsDataURL(file);
+};
+async function fileToBase64(file,maxW=400,q=0.75){
+  return new Promise(res=>{
+    const reader=new FileReader();
+    reader.onload=e=>{
+      const img=new Image();
+      img.onload=()=>{
+        const ratio=Math.min(maxW/img.width,1);
+        const c=document.createElement("canvas");
+        c.width=img.width*ratio;c.height=img.height*ratio;
+        c.getContext("2d").drawImage(img,0,0,c.width,c.height);
+        res(c.toDataURL("image/jpeg",q));
+      };
+      img.src=e.target.result;
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+// ─── Tipo persona jurídica ───
+window.togglePersonaJuridica=function(){
+  const v=gi("restoTipoPersona").value;
+  gi("juridicaFields").style.display=v==="juridica"?"block":"none";
+};
+
+// ─── Mapa helpers ───
+function mkIcon(color){
+  return L.divIcon({className:"",html:`<div style="background:${color};width:14px;height:14px;border-radius:50%;border:2px solid #fff;box-shadow:0 0 5px ${color};"></div>`,iconSize:[14,14],iconAnchor:[7,7]});
+}
+function mkMotoIcon(){
+  return L.divIcon({className:"",html:`<div style="font-size:22px;filter:drop-shadow(0 2px 4px rgba(0,0,0,.6));">🛵</div>`,iconSize:[28,28],iconAnchor:[14,14]});
+}
+async function reverseGeocode(lat,lng){
+  try{const r=await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json`);const d=await r.json();return d.display_name||`${lat.toFixed(5)},${lng.toFixed(5)}`;}
+  catch(e){return `${lat.toFixed(5)},${lng.toFixed(5)}`;}
+}
+function distKm(la1,lo1,la2,lo2){
+  const R=6371,dL=(la2-la1)*Math.PI/180,dl=(lo2-lo1)*Math.PI/180;
+  const a=Math.sin(dL/2)**2+Math.cos(la1*Math.PI/180)*Math.cos(la2*Math.PI/180)*Math.sin(dl/2)**2;
+  return R*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));
+}
+
+// ══ AUTH ══
+window.toggleReg=function(){
+  isRegister=!isRegister;
+  gi("registerFields").style.display=isRegister?"block":"none";
+  gi("authBtn").innerText=isRegister?"Crear cuenta":"Ingresar";
+  gi("btnToggleReg").innerText=isRegister?"¿Ya tienes cuenta? Iniciar sesión":"¿No tienes cuenta? Regístrate";
+  gi("authCardTitle").innerText=isRegister?"Crear cuenta":"Iniciar sesión";
+  if(isRegister)selRole("cliente");
+};
+
+window.selRole=function(rol){
+  rolSeleccionado=rol;
+  ["roleCliente","roleResto","roleMoto"].forEach(id=>gi(id)?.classList.remove("selected"));
+  const map={cliente:"roleCliente",restaurante:"roleResto",motociclista:"roleMoto"};
+  gi(map[rol])?.classList.add("selected");
+  gi("restoFields").style.display=rol==="restaurante"?"block":"none";
+  gi("motoFields").style.display=rol==="motociclista"?"block":"none";
+};
+
+// Google login
+gi("btnGoogleLogin").addEventListener("click",async()=>{
+  try{
+    const r=await signInWithPopup(auth,gprov);
+    const user=r.user;
+    const snap=await getDoc(doc(db,"usuarios",user.uid));
+    if(!snap.exists()){
+      // Primera vez Google — elegir rol
+      gi("authCard").innerHTML=`
+        <div class="card-title">¿Cómo usarás ROBS DELIVERY EXPRESS?</div>
+        <div class="grid2" style="gap:10px;margin-top:10px;">
+          <div class="role-card" onclick="regGoogle('${user.uid}','${esc(user.displayName||"")}','${esc(user.email||"")}','cliente')">
+            <div class="role-icon">🙋</div><div class="role-name">Cliente</div><div class="role-desc">Quiero pedir comida</div>
+          </div>
+          <div class="role-card" onclick="regGoogle('${user.uid}','${esc(user.displayName||"")}','${esc(user.email||"")}','restaurante')">
+            <div class="role-icon">🍽️</div><div class="role-name">Negocio</div><div class="role-desc">Vendo comida</div>
+          </div>
+          <div class="role-card" onclick="regGoogle('${user.uid}','${esc(user.displayName||"")}','${esc(user.email||"")}','motociclista')">
+            <div class="role-icon">🏍️</div><div class="role-name">Repartidor</div><div class="role-desc">Hago deliveries</div>
+          </div>
+          <div class="role-card" onclick="regGoogle('${user.uid}','${esc(user.displayName||"")}','${esc(user.email||"")}','admin')">
+            <div class="role-icon">⚙️</div><div class="role-name">Admin</div><div class="role-desc">Panel de control</div>
+          </div>
+        </div>`;
+    }
+  }catch(e){toast("Error Google: "+(e.message||e.code));}
+});
+
+window.regGoogle=async function(uid,nombre,email,rol){
+  try{
+    await setDoc(doc(db,"usuarios",uid),{uid,nombre,email,rol,estado:"activo",foto:email?`https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(nombre)}`:"",timestamp:new Date().toISOString()});
+    if(rol==="restaurante"){
+      await setDoc(doc(db,"restaurantes",uid),{uid,nombre:"Mi Restaurante",categoria:"otro",activo:true,logo:"",cuotaMensual:CUOTA_MENSUAL_RESTO});
+    }
+    toast("✅ Bienvenido, "+nombre);
+  }catch(e){toast("Error: "+e.message);}
+};
+
+window.doAuth=async function(){
+  const email=(gi("authEmail").value||"").trim();
+  const pass=(gi("authPass").value||"").trim();
+  if(!email||!pass){alert("Completa email y contraseña");return;}
+  if(!isRegister){
+    try{await signInWithEmailAndPassword(auth,email,pass);}
+    catch(e){alert("Email o contraseña incorrectos.");}
+    return;
+  }
+  // Registro
+  const nombre=(gi("regNombre").value||"").trim();
+  const tel=(gi("regTel").value||"").trim();
+  if(!nombre){alert("Ingresa tu nombre");return;}
+  try{
+    let logoBase64="";
+    // Foto negocio
+    if(rolSeleccionado==="restaurante"){
+      const fotoFile=gi("restoFotoFile")?.files[0];
+      if(fotoFile)logoBase64=await fileToBase64(fotoFile,300,0.7);
+    }
+    const cred=await createUserWithEmailAndPassword(auth,email,pass);
+    const perfil={uid:cred.user.uid,nombre,email,telefono:tel,rol:rolSeleccionado,estado:"activo",foto:"",timestamp:new Date().toISOString()};
+    if(rolSeleccionado==="restaurante"){
+      const tipoPersona=gi("restoTipoPersona")?.value||"natural";
+      perfil.restoNombreComercial=(gi("restoNombreComercial")?.value||"").trim();
+      perfil.restoTipoPersona=tipoPersona;
+      perfil.restoRazonSocial=tipoPersona==="juridica"?(gi("restoRazonSocial")?.value||"").trim():"";
+      perfil.restoRepresentante=(gi("restoRepresentante")?.value||"").trim();
+      perfil.restoDireccion=(gi("restoDireccion")?.value||"").trim();
+      perfil.restoTelNegocio=(gi("restoTelNegocio")?.value||"").trim();
+      perfil.restoCocina=gi("restoCocina")?.value||"otro";
+      perfil.restoWeb=(gi("restoWeb")?.value||"").trim();
+      perfil.restoLinkPago=(gi("restoLinkPago")?.value||"").trim();
+      perfil.restoEmailNegocio=(gi("restoEmailNegocio")?.value||"").trim();
+    }
+    if(rolSeleccionado==="motociclista"){
+      perfil.placa=(gi("motoPlaca")?.value||"").trim();
+      perfil.modelo=(gi("motoModelo")?.value||"").trim();
+    }
+    await cred.user.getIdToken(true);
+    await setDoc(doc(db,"usuarios",cred.user.uid),perfil);
+    if(rolSeleccionado==="restaurante"){
+      await setDoc(doc(db,"restaurantes",cred.user.uid),{
+        uid:cred.user.uid,
+        nombre:perfil.restoNombreComercial||nombre,
+        razonSocial:perfil.restoRazonSocial||"",
+        tipoPersona:perfil.restoTipoPersona,
+        representante:perfil.restoRepresentante||nombre,
+        direccion:perfil.restoDireccion||"",
+        telefono:perfil.restoTelNegocio||tel,
+        categoria:perfil.restoCocina,
+        web:perfil.restoWeb||"",
+        linkPago:perfil.restoLinkPago||"",
+        emailNegocio:perfil.restoEmailNegocio||email,
+        logo:logoBase64,
+        activo:true,
+        cuotaMensual:CUOTA_MENSUAL_RESTO,
+        timestamp:new Date().toISOString()
+      });
+    }
+    toast("✅ Cuenta creada exitosamente");
+  }catch(e){alert("Error al registrar: "+(e.message||e.code));}
+};
+
+// ── onAuthStateChanged ──
+onAuthStateChanged(auth,async user=>{
+  if(!user){gi("mainNav").style.display="none";mostrarSeccion("authSection");return;}
+  let data=null;
+  for(let i=0;i<4;i++){
+    const s=await getDoc(doc(db,"usuarios",user.uid)).catch(()=>null);
+    if(s&&s.exists()){data=s.data();break;}
+    await new Promise(r=>setTimeout(r,700));
+  }
+  if(!data){await signOut(auth);return;}
+  miUid=user.uid;miRol=data.rol;miNombre=data.nombre||user.displayName||"";miEmail=data.email||user.email||"";
+  if(data.estado==="inactivo"){alert("Tu cuenta está desactivada. Contacta a ROBS DELIVERY EXPRESS.");await signOut(auth);return;}
+  gi("mainNav").style.display="flex";
+  setupNav(miRol);
+  if(miRol==="cliente"){mostrarSeccion("clienteSection");cargarRestaurantes();}
+  else if(miRol==="restaurante"){mostrarSeccion("restauranteSection");restoTab("pedidos");cargarMisSucursales();escucharPedidosResto();cargarMiMenu();cargarResumenDiario();cargarRestoPerfil();}
+  else if(miRol==="motociclista"){mostrarSeccion("motoSection");iniciarGpsMoto();escucharPedidosMoto();cargarGananciasMoto();}
+  else if(miRol==="admin"){mostrarSeccion("adminSection");cargarDatosAdmin();}
+});
+
+gi("btnLogout").addEventListener("click",async()=>{
+  if(motoWatchId)navigator.geolocation.clearWatch(motoWatchId);
+  if(unsubMoto){unsubMoto();unsubMoto=null;}
+  if(unsubCliPedido){unsubCliPedido();unsubCliPedido=null;}
+  await signOut(auth);
+});
+
+// ── Nav ──
+function mostrarSeccion(id){document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"));gi(id)?.classList.add("active");}
+function setupNav(rol){
+  const tabs=gi("navTabs");tabs.innerHTML="";
+  const defs={
+    cliente:[{l:"🏠 Inicio",s:"clienteSection"},{l:"📦 Pedidos",s:"pedidosSection",cb:cargarPedidosCli}],
+    restaurante:[{l:"🍽️ Panel",s:"restauranteSection"}],
+    motociclista:[{l:"🛵 Delivery",s:"motoSection"}],
+    admin:[{l:"⚙️ Admin",s:"adminSection"}]
+  };
+  (defs[rol]||[]).forEach(({l,s,cb})=>{
+    const b=document.createElement("button");b.className="nav-tab";b.innerText=l;
+    b.addEventListener("click",()=>{mostrarSeccion(s);tabs.querySelectorAll(".nav-tab").forEach(x=>x.classList.remove("active"));b.classList.add("active");if(cb)cb();});
+    tabs.appendChild(b);
+  });
+  tabs.querySelector(".nav-tab")?.classList.add("active");
+}
+
+// ══ RESTAURANTE TABS ══
+window.restoTab=function(tab){
+  ["pedidos","resumen","menu","sucursales","perfil"].forEach(t=>{
+    const p=gi(`rpanel_${t}`);if(p)p.style.display=t===tab?"block":"none";
+    const b=gi(`rtab_${t}`);if(b){
+      b.style.background=t===tab?"linear-gradient(135deg,var(--r),var(--r2))":"#222";
+      b.style.color=t===tab?"#fff":"#aaa";
+      b.style.border=t===tab?"none":"1px solid #333";
+    }
+  });
+};
+
+// ══ RESTAURANTES (Cliente) ══
+let todosRestos=[];
+async function cargarRestaurantes(){
+  const snap=await getDocs(query(collection(db,"restaurantes"),where("activo","==",true)));
+  todosRestos=[];snap.forEach(d=>todosRestos.push({id:d.id,...d.data()}));
+  renderRestos(todosRestos);renderCatFiltros();
+}
+function renderCatFiltros(){
+  const cats=["Todos",...new Set(todosRestos.map(r=>r.categoria).filter(Boolean))];
+  gi("catFiltros").innerHTML=cats.map((c,i)=>`<span class="suc-pill${i===0?" active":""}" onclick="filtrarCat('${esc(c)}')">${esc(c)}</span>`).join("");
+}
+window.filtrarCat=function(cat){
+  document.querySelectorAll("#catFiltros .suc-pill").forEach(p=>p.classList.remove("active"));
+  event.target.classList.add("active");
+  renderRestos(cat==="Todos"?todosRestos:todosRestos.filter(r=>r.categoria===cat));
+};
+window.filtrarRestos=function(){
+  const q=(gi("cliBuscador").value||"").toLowerCase();
+  renderRestos(todosRestos.filter(r=>(r.nombre||"").toLowerCase().includes(q)||(r.categoria||"").toLowerCase().includes(q)));
+};
+function renderRestos(list){
+  if(!list.length){gi("listaRestos").innerHTML="<div style='text-align:center;color:var(--sub);padding:30px;font-size:13px;'>No hay restaurantes disponibles</div>";return;}
+  gi("listaRestos").innerHTML=list.map(r=>`
+    <div class="rest-card" onclick="abrirResto('${r.id}')">
+      <div style="display:flex;gap:12px;align-items:center;">
+        <img class="rest-logo" src="${esc(r.logo||"")}" alt="${esc(r.nombre)}" onerror="this.src='https://api.dicebear.com/7.x/identicon/svg?seed=${encodeURIComponent(r.nombre)}'">
+        <div style="flex:1;">
+          <div class="rest-name">${esc(r.nombre)}</div>
+          <div class="rest-meta">${esc(r.categoria||"")}${r.representante?" · "+esc(r.representante):""}</div>
+          ${r.web?`<div style="font-size:11px;color:var(--blue);margin-top:2px;">🌐 ${esc(r.web)}</div>`:""}
+          ${r.calificacion?`<div style="font-size:12px;color:var(--yellow);">⭐ ${r.calificacion}</div>`:""}
+        </div>
+        <span style="font-size:11px;color:var(--sub);">📦 $${DELIVERY_FEE.toFixed(2)}</span>
+      </div>
+    </div>
+  `).join("");
+}
+
+window.abrirResto=async function(restoId){
+  const resto=todosRestos.find(r=>r.id===restoId);if(!resto)return;
+  const [menuSnap,sucSnap]=await Promise.all([
+    getDocs(collection(db,"restaurantes",restoId,"menu")),
+    getDocs(collection(db,"restaurantes",restoId,"sucursales"))
+  ]);
+  const menuItems=[];menuSnap.forEach(d=>menuItems.push({id:d.id,...d.data()}));
+  const sucursales=[];sucSnap.forEach(d=>sucursales.push({id:d.id,...d.data()}));
+
+  const sucHtml=sucursales.length?`
+    <div style="margin-bottom:12px;">
+      <div style="font-size:11px;color:var(--sub);font-weight:700;text-transform:uppercase;margin-bottom:6px;">Sucursales</div>
+      ${sucursales.map(s=>`<span class="suc-pill">📍 ${esc(s.nombre)} — ${esc(s.ciudad)}${s.horario?" · "+esc(s.horario):""}</span>`).join("")}
+    </div>`:""  ;
+
+  const menuHtml=menuItems.filter(i=>i.disponible!==false).map(item=>`
+    <div class="menu-item">
+      <img src="${esc(item.imagen||"")}" alt="${esc(item.nombre)}" onerror="this.src='https://api.dicebear.com/7.x/shapes/svg?seed=${encodeURIComponent(item.nombre)}'">
+      <div style="flex:1;min-width:0;">
+        <div class="menu-item-name">${esc(item.nombre)}</div>
+        <div class="menu-item-desc">${esc(item.descripcion||"")}</div>
+        <div class="menu-item-price">$${parseFloat(item.precio||0).toFixed(2)}</div>
+      </div>
+      <button class="btn btn-xs" style="background:var(--r);" onclick="agregarAlCarrito('${restoId}','${esc(resto.nombre)}','${esc(resto.linkPago||"")}','${item.id}','${esc(item.nombre)}',${item.precio||0})">+ Agregar</button>
+    </div>
+  `).join("")||"<div style='color:var(--sub);text-align:center;padding:16px;font-size:13px;'>Sin productos disponibles</div>";
+
+  gi("modalRestoContenido").innerHTML=`
+    <div style="display:flex;gap:12px;align-items:center;margin-bottom:14px;">
+      <img style="width:64px;height:64px;border-radius:14px;object-fit:cover;border:2px solid var(--r);background:#333;" src="${esc(resto.logo||"")}" alt="${esc(resto.nombre)}" onerror="this.src='https://api.dicebear.com/7.x/identicon/svg?seed=${encodeURIComponent(resto.nombre)}'">
+      <div>
+        <div style="font-family:'Outfit',sans-serif;font-size:20px;font-weight:700;color:var(--r);">${esc(resto.nombre)}</div>
+        <div style="font-size:12px;color:var(--sub);">${esc(resto.categoria||"")} ${resto.representante?"· "+esc(resto.representante):""}</div>
+        ${resto.telefono?`<div style="font-size:12px;color:var(--g);">📞 ${esc(resto.telefono)}</div>`:""}
+        ${resto.web?`<div style="font-size:12px;color:var(--blue);">🌐 <a href="${esc(resto.web)}" target="_blank" style="color:var(--blue);">${esc(resto.web)}</a></div>`:""}
+        ${resto.linkPago?`<div style="font-size:12px;color:var(--yellow);">💳 <a href="${esc(resto.linkPago)}" target="_blank" style="color:var(--yellow);">Enlace de pago</a></div>`:""}
+      </div>
+    </div>
+    ${sucHtml}
+    <div style="font-size:11px;color:var(--sub);font-weight:700;text-transform:uppercase;margin-bottom:8px;">Menú</div>
+    ${menuHtml}
+  `;
+  abrirModal("modalResto");
+};
+
+// ══ CARRITO ══
+window.agregarAlCarrito=function(restoId,restoNombre,linkPago,itemId,nombre,precio){
+  if(carritoRestoId&&carritoRestoId!==restoId){if(!confirm("Tienes items de otro restaurante. ¿Vaciar y empezar nuevo carrito?"))return;carrito=[];}
+  carritoRestoId=restoId;carritoRestoNombre=restoNombre;carritoRestoLinkPago=linkPago;
+  const ex=carrito.find(c=>c.itemId===itemId);
+  if(ex)ex.cantidad++;else carrito.push({itemId,nombre,precio,cantidad:1});
+  actualizarCarritoUI();toast("✅ "+nombre+" agregado al carrito");
+};
+function actualizarCarritoUI(){
+  const sub=carrito.reduce((s,c)=>s+c.precio*c.cantidad,0);
+  const count=carrito.reduce((s,c)=>s+c.cantidad,0);
+  const total=sub+DELIVERY_FEE;
+  gi("carritoCount").innerText=count;gi("carritoTotal").innerText=sub.toFixed(2);
+  gi("carritoTotalModal").innerText=sub.toFixed(2);gi("carritoTotalFinal").innerText=total.toFixed(2);
+  gi("carritoBar").style.display=carrito.length?"block":"none";
+}
+window.abrirCarrito=function(){
+  if(!carrito.length){toast("El carrito está vacío");return;}
+  gi("carritoItems").innerHTML=carrito.map((c,i)=>`
+    <div class="cart-item">
+      <div><div style="font-weight:700;font-size:14px;">${esc(c.nombre)}</div><div style="font-size:12px;color:var(--sub);">$${c.precio.toFixed(2)} c/u</div></div>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <button class="btn-xs" style="background:#333;color:#fff;" onclick="cambiarCantidad(${i},-1)">−</button>
+        <span style="font-weight:700;min-width:20px;text-align:center;">${c.cantidad}</span>
+        <button class="btn-xs btn" onclick="cambiarCantidad(${i},1)">+</button>
+        <span style="font-family:'Outfit',sans-serif;font-weight:700;color:var(--r);">$${(c.precio*c.cantidad).toFixed(2)}</span>
+      </div>
+    </div>
+  `).join("");
+  actualizarCarritoUI();abrirModal("modalCarrito");
+  setTimeout(initEntregaMap,350);
+};
+window.cambiarCantidad=function(i,d){
+  carrito[i].cantidad+=d;if(carrito[i].cantidad<=0)carrito.splice(i,1);
+  actualizarCarritoUI();if(carrito.length)abrirCarrito();else cerrarModal("modalCarrito");
+};
+function initEntregaMap(){
+  if(entregaMap)return;
+  const el=gi("entregaMapEl");if(!el)return;
+  const lat=miLat||-16.5,lng=miLng||-68.15;
+  gi("entregaMapWrapper").style.display="block";
+  entregaMap=L.map(el,{attributionControl:false,zoomAnimation:false}).setView([lat,lng],13);
+  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19}).addTo(entregaMap);
+  entregaLat=lat;entregaLng=lng;
+  entregaMarker=L.marker([lat,lng],{draggable:true,icon:mkIcon("#10b981")}).addTo(entregaMap).bindPopup("Tu dirección de entrega");
+  entregaMarker.on("dragend",async e=>{const{lat,lng}=e.target.getLatLng();entregaLat=lat;entregaLng=lng;gi("direccionEntrega").value=await reverseGeocode(lat,lng);});
+  setTimeout(()=>entregaMap.invalidateSize(),300);
+}
+window.usarGPSEntrega=function(){
+  if(!navigator.geolocation){toast("GPS no disponible");return;}
+  navigator.geolocation.getCurrentPosition(async pos=>{
+    entregaLat=pos.coords.latitude;entregaLng=pos.coords.longitude;
+    gi("direccionEntrega").value=await reverseGeocode(entregaLat,entregaLng);
+    if(entregaMap){entregaMarker.setLatLng([entregaLat,entregaLng]);entregaMap.setView([entregaLat,entregaLng],16);}
+    toast("📍 Ubicación GPS aplicada");
+  },()=>toast("No se pudo obtener GPS"),{enableHighAccuracy:true,timeout:8000});
+};
+window.confirmarPedido=async function(){
+  if(!carrito.length){toast("Carrito vacío");return;}
+  const dir=(gi("direccionEntrega").value||"").trim();
+  if(!dir){toast("Escribe tu dirección de entrega");return;}
+  const notas=(gi("notasPedido").value||"").trim();
+  const sub=carrito.reduce((s,c)=>s+c.precio*c.cantidad,0);
+  const total=sub+DELIVERY_FEE;
+  const pedido={
+    clienteId:miUid,clienteNombre:miNombre,clienteEmail:miEmail,
+    restoId:carritoRestoId,restoNombre:carritoRestoNombre,restoLinkPago:carritoRestoLinkPago,
+    items:carrito.map(c=>({...c})),subtotal:sub,deliveryFee:DELIVERY_FEE,total,
+    direccion:dir,notas,entregaLat:entregaLat||null,entregaLng:entregaLng||null,
+    estado:"pendiente",motoId:null,motoNombre:"",motoLat:null,motoLng:null,
+    timestamp:new Date().toISOString(),fecha:new Date().toISOString().slice(0,10)
+  };
+  try{
+    const ref=await addDoc(collection(db,"pedidos"),pedido);
+    currentPedidoId=ref.id;
+    carrito=[];carritoRestoId="";carritoRestoNombre="";carritoRestoLinkPago="";
+    actualizarCarritoUI();cerrarModal("modalCarrito");
+    toast("✅ ¡Pedido enviado! Esperando confirmación del restaurante");
+    escucharPedidoActivo(ref.id);abrirModal("modalPedidoActivo");
+  }catch(e){toast("Error enviando pedido: "+e.message);}
+};
+
+// ══ PEDIDO ACTIVO (CLIENTE) ══
+function escucharPedidoActivo(pedidoId){
+  if(unsubCliPedido){unsubCliPedido();unsubCliPedido=null;}
+  const estadoInfo={
+    pendiente:{txt:"⏳ Esperando confirmación del restaurante",color:"var(--yellow)",steps:1},
+    confirmado:{txt:"✅ Restaurante preparando tu pedido",color:"var(--blue)",steps:2},
+    en_camino:{txt:"🛵 Repartidor en camino a recogerte",color:"var(--o)",steps:3},
+    recogido:{txt:"🛵 ¡Pedido recogido! En camino a ti",color:"var(--r)",steps:3},
+    entregado:{txt:"🏁 ¡Pedido entregado! Buen provecho 🍴",color:"var(--g)",steps:4},
+    cancelado:{txt:"❌ Pedido cancelado",color:"var(--red)",steps:0}
+  };
+  unsubCliPedido=onSnapshot(doc(db,"pedidos",pedidoId),snap=>{
+    if(!snap.exists())return;
+    const p=snap.data();
+    const info=estadoInfo[p.estado]||{txt:p.estado,color:"#aaa",steps:1};
+    const stepsHtml=Array.from({length:4},(_,i)=>`<div class="os-step${i<info.steps?" done":""}"></div>`).join("");
+    gi("pedidoActivoInfo").innerHTML=`
+      <div style="background:rgba(0,0,0,.3);border-radius:12px;padding:12px;margin-bottom:10px;">
+        <div style="font-size:14px;font-weight:700;color:${info.color};margin-bottom:6px;">${info.txt}</div>
+        <div class="os-bar">${stepsHtml}</div>
+        <div class="stat-row"><span class="stat-label">Restaurante</span><span style="font-size:13px;">${esc(p.restoNombre)}</span></div>
+        <div class="stat-row"><span class="stat-label">Subtotal</span><span>$${p.subtotal?.toFixed(2)||"0"}</span></div>
+        <div class="stat-row"><span class="stat-label">Delivery</span><span>$${p.deliveryFee?.toFixed(2)||"0.75"}</span></div>
+        <div class="stat-row"><span class="stat-label" style="font-weight:700;">Total pagado</span><span class="stat-val">$${p.total?.toFixed(2)||"0"}</span></div>
+        <div class="stat-row"><span class="stat-label">Dirección</span><span style="font-size:12px;">${esc(p.direccion)}</span></div>
+        ${p.motoNombre?`<div class="stat-row"><span class="stat-label">Repartidor</span><span>🛵 ${esc(p.motoNombre)}</span></div>`:""}
+        ${p.restoLinkPago?`<div style="margin-top:10px;"><a href="${esc(p.restoLinkPago)}" target="_blank" style="display:block;background:rgba(16,185,129,.15);border:1px solid var(--r);border-radius:10px;padding:10px;text-align:center;color:var(--r);font-family:'Outfit',sans-serif;font-weight:700;font-size:14px;text-decoration:none;">💳 IR A PAGAR →</a></div>`:""}
+      </div>`;
+    if((p.estado==="en_camino"||p.estado==="recogido")&&p.motoLat){
+      gi("pedidoActivoMapWrapper").style.display="block";
+      setTimeout(()=>initPedidoActivoMap(p),300);
+    }
+  });
+  if(unsubCliChat){unsubCliChat();unsubCliChat=null;}
+  unsubCliChat=escucharChat(pedidoId,"cliChatBox");
+}
+function initPedidoActivoMap(p){
+  if(pedidoActivoMap){if(cliMarkerMoto)cliMarkerMoto.setLatLng([p.motoLat,p.motoLng]);return;}
+  const el=gi("pedidoActivoMapEl");if(!el)return;
+  pedidoActivoMap=L.map(el,{attributionControl:false,zoomAnimation:false}).setView([p.motoLat,p.motoLng],14);
+  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19}).addTo(pedidoActivoMap);
+  cliMarkerMoto=L.marker([p.motoLat,p.motoLng],{icon:mkMotoIcon()}).addTo(pedidoActivoMap).bindPopup("🛵 Tu repartidor");
+  if(p.entregaLat)L.marker([p.entregaLat,p.entregaLng],{icon:mkIcon("#10b981")}).addTo(pedidoActivoMap).bindPopup("🏠 Tu dirección");
+  setTimeout(()=>pedidoActivoMap.invalidateSize(),300);
+}
+window.cancelarPedidoCli=async function(){
+  if(!currentPedidoId){cerrarModal("modalPedidoActivo");return;}
+  if(!confirm("¿Cancelar el pedido?"))return;
+  await updateDoc(doc(db,"pedidos",currentPedidoId),{estado:"cancelado"});
+  cerrarModal("modalPedidoActivo");toast("Pedido cancelado");
+};
+window.enviarMsgCli=async function(){
+  const inp=gi("cliChatInput");if(!inp.value.trim()||!currentPedidoId)return;
+  await addDoc(collection(db,"pedidos",currentPedidoId,"chat"),{uid:miUid,nombre:miNombre,msg:inp.value.trim(),ts:new Date().toISOString()}).catch(()=>{});
+  inp.value="";
+};
+
+// ══ MIS PEDIDOS (historial cliente) ══
+async function cargarPedidosCli(){
+  const snap=await getDocs(query(collection(db,"pedidos"),where("clienteId","==",miUid),orderBy("timestamp","desc"),limit(30)));
+  const list=[];snap.forEach(d=>list.push({id:d.id,...d.data()}));
+  const colores={pendiente:"var(--yellow)",confirmado:"var(--blue)",en_camino:"var(--o)",recogido:"var(--o)",entregado:"var(--g)",cancelado:"var(--red)"};
+  gi("listaPedidosCli").innerHTML=list.length?list.map(p=>`
+    <div class="order-card">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+        <div style="font-weight:700;font-size:14px;">${esc(p.restoNombre)}</div>
+        <span class="badge" style="color:${colores[p.estado]||"#fff"};border:1px solid ${colores[p.estado]||"#333"};background:transparent;">${p.estado}</span>
+      </div>
+      <div style="font-size:12px;color:var(--sub);">${p.items?.map(i=>`${i.cantidad}x ${i.nombre}`).join(", ")||""}</div>
+      <div style="font-family:'Outfit',sans-serif;font-size:18px;color:var(--r);margin-top:4px;">$${p.total?.toFixed(2)||"0"}</div>
+      <div style="font-size:11px;color:var(--sub);">${(p.timestamp||"").slice(0,16).replace("T"," ")}</div>
+      ${["pendiente","confirmado","en_camino","recogido"].includes(p.estado)?`<button class="btn btn-sm" style="margin-top:8px;" onclick="reabrirPedido('${p.id}')">Ver pedido activo →</button>`:""}
+    </div>
+  `).join(""):"<div style='text-align:center;color:var(--sub);padding:30px;'>Aún no tienes pedidos</div>";
+}
+window.reabrirPedido=function(id){currentPedidoId=id;escucharPedidoActivo(id);abrirModal("modalPedidoActivo");};
+
+// ══ RESTAURANTE — SUCURSALES ══
+async function cargarMisSucursales(){
+  const snap=await getDocs(collection(db,"restaurantes",miUid,"sucursales"));
+  const list=[];snap.forEach(d=>list.push({id:d.id,...d.data()}));
+  const btn=gi("btnAgregarSuc");
+  if(btn)btn.style.display=list.length>=51?"none":"block";
+  gi("sucursalesList").innerHTML=list.length?list.map((s,i)=>`
+    <div style="background:#111;border-radius:10px;padding:11px;margin-bottom:8px;">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+        <div>
+          <div style="font-weight:700;font-size:14px;">${i===0?"🏠 ":""+"📍 "}${esc(s.nombre)}</div>
+          <div style="font-size:12px;color:var(--sub);margin-top:2px;">${esc(s.ciudad)}${s.direccion?" · "+esc(s.direccion):""}</div>
+          ${s.telefono?`<div style="font-size:11px;color:var(--g);">📞 ${esc(s.telefono)}</div>`:""}
+          ${s.horario?`<div style="font-size:11px;color:var(--sub);">🕐 ${esc(s.horario)}</div>`:""}
+          <div style="font-size:11px;color:var(--r);margin-top:2px;">GPS: ${s.lat?.toFixed(5)||"?"}, ${s.lng?.toFixed(5)||"?"} · Radio: ${s.cobertura||5}km</div>
+        </div>
+        <button class="btn-xs btn-red" style="background:var(--red);color:#fff;flex-shrink:0;" onclick="eliminarSucursal('${s.id}')">🗑️</button>
+      </div>
+    </div>
+  `).join("")+"<div style='font-size:11px;color:var(--sub);text-align:center;margin-top:6px;'>"+list.length+"/51 sucursales</div>"
+  :"<div style='color:var(--sub);font-size:13px;'>Aún no tienes sucursales. La primera que agregues será la sucursal principal.</div>";
+}
+
+window.abrirModalSucursal=function(){abrirModal("modalSucursal");setTimeout(initSucMap,400);};
+function initSucMap(){
+  if(sucMap)return;
+  const el=gi("sucMapEl");if(!el)return;
+  const lat=miLat||-16.5,lng=miLng||-68.15;
+  sucMap=L.map(el,{attributionControl:false,zoomAnimation:false}).setView([lat,lng],13);
+  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19}).addTo(sucMap);
+  sucMarker=L.marker([lat,lng],{draggable:true,icon:mkIcon("#10b981")}).addTo(sucMap).bindPopup("Arrastra para ubicar la sucursal");
+  sucMarker.on("dragend",e=>{const{lat,lng}=e.target.getLatLng();gi("sucLat").value=lat.toFixed(6);gi("sucLng").value=lng.toFixed(6);});
+  sucMap.on("click",e=>{const{lat,lng}=e.latlng;sucMarker.setLatLng([lat,lng]);gi("sucLat").value=lat.toFixed(6);gi("sucLng").value=lng.toFixed(6);});
+  setTimeout(()=>sucMap.invalidateSize(),300);
+}
+window.usarGPSSucursal=function(){
+  if(!navigator.geolocation){toast("GPS no disponible");return;}
+  navigator.geolocation.getCurrentPosition(pos=>{
+    const{latitude:lat,longitude:lng}=pos.coords;
+    gi("sucLat").value=lat.toFixed(6);gi("sucLng").value=lng.toFixed(6);
+    if(sucMap){sucMarker.setLatLng([lat,lng]);sucMap.setView([lat,lng],16);}
+    toast("📍 GPS aplicado");
+  },()=>toast("No se pudo obtener GPS"),{enableHighAccuracy:true,timeout:8000});
+};
+window.guardarSucursal=async function(){
+  const snap=await getDocs(collection(db,"restaurantes",miUid,"sucursales"));
+  if(snap.size>=51){toast("Máximo 51 sucursales (1 principal + 50)");return;}
+  const nombre=(gi("sucNombre").value||"").trim();
+  const dir=(gi("sucDireccion").value||"").trim();
+  const ciudad=(gi("sucCiudad").value||"").trim();
+  const tel=(gi("sucTel").value||"").trim();
+  const horario=(gi("sucHorario").value||"").trim();
+  const lat=parseFloat(gi("sucLat").value);
+  const lng=parseFloat(gi("sucLng").value);
+  const cobertura=parseFloat(gi("sucCobertura").value)||5;
+  if(!nombre||!ciudad){toast("Completa nombre y ciudad");return;}
+  if(isNaN(lat)||isNaN(lng)){toast("Selecciona la ubicación en el mapa o usa GPS");return;}
+  await addDoc(collection(db,"restaurantes",miUid,"sucursales"),{nombre,direccion:dir,ciudad,telefono:tel,horario,lat,lng,cobertura,activa:true,timestamp:new Date().toISOString()});
+  toast("✅ Sucursal guardada");cerrarModal("modalSucursal");
+  ["sucNombre","sucDireccion","sucCiudad","sucTel","sucHorario","sucLat","sucLng"].forEach(id=>{if(gi(id))gi(id).value="";});
+  cargarMisSucursales();
+};
+window.eliminarSucursal=async function(id){
+  if(!confirm("¿Eliminar esta sucursal?"))return;
+  await deleteDoc(doc(db,"restaurantes",miUid,"sucursales",id));
+  toast("Sucursal eliminada");cargarMisSucursales();
+};
+
+// ══ RESTAURANTE — MENÚ ══
+async function cargarMiMenu(){
+  const snap=await getDocs(collection(db,"restaurantes",miUid,"menu"));
+  const list=[];snap.forEach(d=>list.push({id:d.id,...d.data()}));
+  gi("menuAdmin").innerHTML=list.length?list.map(item=>`
+    <div class="menu-item">
+      <img src="${esc(item.imagen||"")}" alt="${esc(item.nombre)}" onerror="this.src='https://api.dicebear.com/7.x/shapes/svg?seed=${encodeURIComponent(item.nombre)}'">
+      <div style="flex:1;min-width:0;">
+        <div class="menu-item-name">${esc(item.nombre)} ${item.disponible===false?'<span style="color:var(--red);font-size:10px;">No disp.</span>':''}</div>
+        <div class="menu-item-desc">${esc(item.descripcion||"")} · <span class="badge badge-b" style="font-size:10px;">${esc(item.categoria||"")}</span></div>
+        <div class="menu-item-price">$${parseFloat(item.precio||0).toFixed(2)}</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:4px;">
+        <button class="btn-xs btn-red" style="background:var(--red);color:#fff;" onclick="eliminarMenuItem('${item.id}')">🗑️</button>
+      </div>
+    </div>
+  `).join(""):"<div style='color:var(--sub);font-size:13px;text-align:center;padding:16px;'>No tienes productos en el menú. ¡Agrega el primero!</div>";
+}
+window.abrirModalMenu=function(){abrirModal("modalMenu");};
+window.guardarMenuItem=async function(){
+  const nombre=(gi("menuNombre").value||"").trim();
+  const desc=(gi("menuDesc").value||"").trim();
+  const precio=parseFloat(gi("menuPrecio").value)||0;
+  const cat=gi("menuCat").value;
+  const imagen=(gi("menuImg").value||"").trim();
+  const disponible=gi("menuDisponible").value==="true";
+  if(!nombre||!precio){toast("Completa nombre y precio");return;}
+  await addDoc(collection(db,"restaurantes",miUid,"menu"),{nombre,descripcion:desc,precio,categoria:cat,imagen,disponible,timestamp:new Date().toISOString()});
+  toast("✅ Producto guardado");cerrarModal("modalMenu");
+  ["menuNombre","menuDesc","menuPrecio","menuImg"].forEach(id=>{if(gi(id))gi(id).value="";});
+  cargarMiMenu();
+};
+window.eliminarMenuItem=async function(id){
+  if(!confirm("¿Eliminar este producto?"))return;
+  await deleteDoc(doc(db,"restaurantes",miUid,"menu",id));
+  toast("Producto eliminado");cargarMiMenu();
+};
+
+// ══ RESTAURANTE — PEDIDOS ENTRANTES ══
+function escucharPedidosResto(){
+  onSnapshot(
+    query(collection(db,"pedidos"),where("restoId","==",miUid),where("estado","in",["pendiente","confirmado"])),
+    snap=>{
+      const list=[];snap.forEach(d=>list.push({id:d.id,...d.data()}));
+      gi("pedidosResto").innerHTML=list.length?list.map(p=>`
+        <div class="order-card">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+            <div style="font-weight:700;">${esc(p.clienteNombre)}</div>
+            <span class="badge badge-y">${p.estado}</span>
+          </div>
+          <div style="font-size:12px;color:var(--sub);margin-bottom:4px;">${p.items?.map(i=>`${i.cantidad}× ${i.nombre}`).join(" · ")||""}</div>
+          <div style="display:flex;gap:10px;margin-bottom:6px;">
+            <span style="font-family:'Outfit',sans-serif;font-weight:700;color:var(--r);font-size:16px;">$${p.subtotal?.toFixed(2)||"0"}</span>
+            <span style="font-size:11px;color:var(--sub);align-self:flex-end;">+ $${DELIVERY_FEE} delivery</span>
+          </div>
+          <div style="font-size:12px;color:var(--sub);">📍 ${esc(p.direccion||"")}</div>
+          ${p.notas?`<div style="font-size:12px;background:#111;border-radius:8px;padding:6px 10px;margin-top:6px;color:#ccc;">📝 ${esc(p.notas)}</div>`:""}
+          <div style="display:flex;gap:6px;margin-top:10px;flex-wrap:wrap;">
+            ${p.estado==="pendiente"?`<button class="btn btn-sm" onclick="confirmarPedidoResto('${p.id}')">✅ Confirmar</button>`:"<span class='badge badge-b'>En preparación</span>"}
+            <button class="btn-red btn btn-sm" onclick="cancelarPedidoResto('${p.id}')">❌ Rechazar</button>
+          </div>
+        </div>
+      `).join(""):"<div style='color:var(--sub);font-size:13px;text-align:center;padding:20px;'>Sin pedidos pendientes</div>";
+    }
+  );
+}
+window.confirmarPedidoResto=async function(id){await updateDoc(doc(db,"pedidos",id),{estado:"confirmado"});toast("✅ Pedido confirmado — el repartidor puede tomarlo");};
+window.cancelarPedidoResto=async function(id){if(!confirm("¿Rechazar este pedido?"))return;await updateDoc(doc(db,"pedidos",id),{estado:"cancelado"});toast("Pedido rechazado");};
+
+// ══ RESTAURANTE — RESUMEN DIARIO ══
+async function cargarResumenDiario(){
+  const snap=await getDocs(query(collection(db,"pedidos"),where("restoId","==",miUid),where("estado","in",["entregado","en_camino","confirmado","recogido"]),orderBy("timestamp","desc"),limit(200)));
+  const byDay={};
+  snap.forEach(d=>{
+    const p=d.data();
+    const fecha=p.fecha||(p.timestamp||"").slice(0,10);
+    if(!byDay[fecha])byDay[fecha]={viajes:0,delivery:0,ventas:0};
+    byDay[fecha].viajes++;
+    byDay[fecha].delivery+=(p.deliveryFee||DELIVERY_FEE);
+    byDay[fecha].ventas+=(p.subtotal||p.total||0);
+  });
+  const today=new Date().toISOString().slice(0,10);
+  const hoy=byDay[today]||{viajes:0,delivery:0,ventas:0};
+  gi("rs_viajes").innerText=hoy.viajes;
+  gi("rs_delivery").innerText="$"+hoy.delivery.toFixed(2);
+  gi("rs_ventas").innerText="$"+hoy.ventas.toFixed(2);
+  const dias=Object.entries(byDay).sort((a,b)=>b[0].localeCompare(a[0]));
+  gi("resumenDiarioBody").innerHTML=dias.length?dias.map(([fecha,d])=>`
+    <tr>
+      <td>${fecha}${fecha===today?' <span class="badge badge-r" style="font-size:9px;">HOY</span>':""}</td>
+      <td style="font-weight:700;color:var(--r);">${d.viajes}</td>
+      <td style="color:var(--g);">$${d.delivery.toFixed(2)}</td>
+      <td style="color:var(--yellow);font-weight:700;">$${d.ventas.toFixed(2)}</td>
+    </tr>
+  `).join(""):"<tr><td colspan='4' style='text-align:center;color:var(--sub);padding:20px;'>Sin datos aún</td></tr>";
+}
+
+// ══ RESTAURANTE — PERFIL ══
+async function cargarRestoPerfil(){
+  const snap=await getDoc(doc(db,"restaurantes",miUid));
+  if(!snap.exists()){gi("restoPerfil").innerHTML="<div style='color:var(--sub);'>Perfil no encontrado</div>";return;}
+  const r=snap.data();
+  gi("restoPerfil").innerHTML=`
+    <div style="display:flex;gap:12px;align-items:center;margin-bottom:14px;">
+      ${r.logo?`<img src="${esc(r.logo)}" style="width:70px;height:70px;border-radius:14px;object-fit:cover;border:2px solid var(--r);" alt="">`:"<div style='width:70px;height:70px;border-radius:14px;background:#333;display:flex;align-items:center;justify-content:center;font-size:28px;'>🍽️</div>"}
+      <div><div style="font-family:'Outfit',sans-serif;font-size:20px;font-weight:700;color:var(--r);">${esc(r.nombre)}</div>
+      <div style="font-size:12px;color:var(--sub);">${esc(r.categoria||"")} · ${esc(r.tipoPersona==="juridica"?"Persona Jurídica":"Persona Natural")}</div></div>
+    </div>
+    ${r.razonSocial?`<div class="stat-row"><span class="stat-label">Razón social</span><span>${esc(r.razonSocial)}</span></div>`:""}
+    <div class="stat-row"><span class="stat-label">Representante</span><span>${esc(r.representante||"—")}</span></div>
+    <div class="stat-row"><span class="stat-label">Dirección</span><span style="font-size:12px;">${esc(r.direccion||"—")}</span></div>
+    <div class="stat-row"><span class="stat-label">Teléfono</span><span>${esc(r.telefono||"—")}</span></div>
+    <div class="stat-row"><span class="stat-label">Email negocio</span><span style="font-size:12px;">${esc(r.emailNegocio||"—")}</span></div>
+    ${r.web?`<div class="stat-row"><span class="stat-label">Sitio web</span><span><a href="${esc(r.web)}" target="_blank" style="color:var(--blue);">${esc(r.web)}</a></span></div>`:""}
+    ${r.linkPago?`<div class="stat-row"><span class="stat-label">Link de pago</span><span><a href="${esc(r.linkPago)}" target="_blank" style="color:var(--yellow);">Ver enlace →</a></span></div>`:""}
+    <div class="stat-row"><span class="stat-label">Cuota mensual app</span><span class="stat-val">$${CUOTA_MENSUAL_RESTO}.00/mes</span></div>
+    <div class="stat-row"><span class="stat-label">Costo delivery x viaje</span><span style="color:var(--g);font-weight:700;">$${DELIVERY_FEE}/viaje</span></div>
+  `;
+}
+
+// ══ MOTOCICLISTA ══
+function iniciarGpsMoto(){
+  setGpsMotoStatus(false);
+  if(!navigator.geolocation){toast("GPS no disponible");return;}
+  navigator.geolocation.getCurrentPosition(
+    pos=>onMotoPos(pos.coords.latitude,pos.coords.longitude),
+    ()=>{},{enableHighAccuracy:false,timeout:8000}
+  );
+  motoWatchId=navigator.geolocation.watchPosition(
+    pos=>onMotoPos(pos.coords.latitude,pos.coords.longitude),
+    ()=>setGpsMotoStatus(false),
+    {enableHighAccuracy:true,maximumAge:0,timeout:12000}
+  );
+}
+async function onMotoPos(lat,lng){
+  miLat=lat;miLng=lng;setGpsMotoStatus(true);
+  try{await updateDoc(doc(db,"usuarios",miUid),{motoLat:lat,motoLng:lng});}catch(e){}
+  if(currentPedidoId){try{await updateDoc(doc(db,"pedidos",currentPedidoId),{motoLat:lat,motoLng:lng});}catch(e){}}
+  if(!motoMap)initMotoMiniMap(lat,lng);
+  else{motoMarker?.setLatLng([lat,lng]);motoMap.panTo([lat,lng]);}
+  if(activaMap&&activaMarkerMoto)activaMarkerMoto.setLatLng([lat,lng]);
+}
+function setGpsMotoStatus(on){
+  const el=gi("motoGpsStatus");if(!el)return;
+  el.className=`gps-status ${on?"gps-on":"gps-off"}`;
+  el.innerHTML=`<span class="gps-dot"></span>${on?"GPS Activo — Visible para pedidos":"GPS Apagado"}`;
+}
+function initMotoMiniMap(lat,lng){
+  const el=gi("motoMapEl");if(!el)return;
+  gi("motoMapWrapper").style.display="block";
+  motoMap=L.map(el,{attributionControl:false,zoomAnimation:false}).setView([lat,lng],14);
+  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19}).addTo(motoMap);
+  motoMarker=L.marker([lat,lng],{icon:mkMotoIcon()}).addTo(motoMap).bindPopup("Tu posición 🛵");
+  setTimeout(()=>motoMap.invalidateSize(),300);
+}
+
+function escucharPedidosMoto(){
+  if(unsubMoto){unsubMoto();unsubMoto=null;}
+  unsubMoto=onSnapshot(
+    query(collection(db,"pedidos"),where("estado","==","confirmado"),where("motoId","==",null)),
+    snap=>{
+      const list=[];snap.forEach(d=>list.push({id:d.id,...d.data()}));
+      gi("pedidosMoto").innerHTML=list.length?list.map(p=>`
+        <div class="order-card">
+          <div style="font-weight:700;margin-bottom:4px;">🍽️ ${esc(p.restoNombre)}</div>
+          <div style="font-size:12px;color:var(--sub);">👤 ${esc(p.clienteNombre)}</div>
+          <div style="font-size:12px;color:var(--sub);">📍 ${esc(p.direccion||"")}</div>
+          <div style="display:flex;gap:10px;align-items:center;margin-top:6px;">
+            <span style="font-family:'Outfit',sans-serif;font-weight:700;color:var(--g);font-size:16px;">+$${DELIVERY_FEE.toFixed(2)}</span>
+            <span style="font-size:11px;color:var(--sub);">(delivery) · Pedido: $${p.subtotal?.toFixed(2)||"0"}</span>
+          </div>
+          <button class="btn-g btn" style="margin-top:8px;" onclick="tomarPedido('${p.id}','${esc(p.clienteNombre)}','${esc(p.restoNombre)}','${esc(p.direccion||"")}',${p.entregaLat||0},${p.entregaLng||0},${p.subtotal||0})">🛵 TOMAR PEDIDO</button>
+        </div>
+      `).join(""):"<div style='text-align:center;color:var(--sub);padding:24px;font-size:13px;'>No hay pedidos disponibles en este momento</div>";
+    }
+  );
+}
+
+window.tomarPedido=async function(pedidoId,clienteNombre,restoNombre,direccion,entLat,entLng,subtotal){
+  try{
+    await updateDoc(doc(db,"pedidos",pedidoId),{motoId:miUid,motoNombre:miNombre,estado:"en_camino",motoLat:miLat||null,motoLng:miLng||null});
+    currentPedidoId=pedidoId;
+    gi("motoActiveCard").style.display="block";
+    gi("motoActiveInfo").innerHTML=`
+      <div class="stat-row"><span class="stat-label">Restaurante</span><span>${esc(restoNombre)}</span></div>
+      <div class="stat-row"><span class="stat-label">Cliente</span><span>${esc(clienteNombre)}</span></div>
+      <div class="stat-row"><span class="stat-label">Dirección entrega</span><span style="font-size:12px;">${esc(direccion)}</span></div>
+      <div class="stat-row"><span class="stat-label">Tu ganancia</span><span class="stat-val">$${DELIVERY_FEE.toFixed(2)}</span></div>
+    `;
+    gi("motoActiveCard").scrollIntoView({behavior:"smooth"});
+    if(entLat&&entLng)setTimeout(()=>initActivaMap(entLat,entLng),400);
+    if(unsubMotoChat){unsubMotoChat();unsubMotoChat=null;}
+    unsubMotoChat=escucharChat(pedidoId,"motoChatBox");
+    toast("✅ Pedido tomado! Dirígete al restaurante");
+  }catch(e){toast("Error: "+e.message);}
+};
+function initActivaMap(entLat,entLng){
+  if(activaMap)return;
+  const el=gi("activaMapEl");if(!el)return;
+  activaMap=L.map(el,{attributionControl:false,zoomAnimation:false}).setView([entLat,entLng],13);
+  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19}).addTo(activaMap);
+  activaMarkerDest=L.marker([entLat,entLng],{icon:mkIcon("#10b981")}).addTo(activaMap).bindPopup("🏠 Entregar aquí");
+  if(miLat)activaMarkerMoto=L.marker([miLat,miLng],{icon:mkMotoIcon()}).addTo(activaMap).bindPopup("Tú 🛵");
+  if(miLat&&entLat){
+    try{activaMap.fitBounds([[miLat,miLng],[entLat,entLng]],{padding:[40,40]});}catch(e){}
+  }
+  setTimeout(()=>activaMap.invalidateSize(),300);
+}
+window.marcarRecogido=async function(){
+  if(!currentPedidoId)return;
+  await updateDoc(doc(db,"pedidos",currentPedidoId),{estado:"recogido"}).catch(()=>{});
+  toast("📦 Recogido — en camino al cliente");
+};
+window.marcarEntregado=async function(){
+  if(!currentPedidoId){toast("Sin pedido activo");return;}
+  if(!confirm("¿Confirmar que el pedido fue entregado?"))return;
+  const snap=await getDoc(doc(db,"pedidos",currentPedidoId));
+  const p=snap.data();
+  const subtotal=p?.subtotal||0;
+  const comision=subtotal*MOTO_COMISION; // 5% del valor de la comida
+  const gananciaReal=DELIVERY_FEE-comision; // ganancia neta del moto
+  await updateDoc(doc(db,"pedidos",currentPedidoId),{estado:"entregado"});
+  await addDoc(collection(db,"ganancias",miUid,"historial"),{
+    pedidoId:currentPedidoId,subtotalComida:subtotal,deliveryFee:DELIVERY_FEE,
+    comision5pct:comision,gananciaNeta:gananciaReal,
+    fecha:new Date().toISOString().slice(0,10),timestamp:new Date().toISOString()
+  }).catch(()=>{});
+  // Limpiar
+  currentPedidoId=null;gi("motoActiveCard").style.display="none";
+  if(unsubMotoChat){unsubMotoChat();unsubMotoChat=null;}
+  if(activaMap){try{activaMap.off();activaMap.remove();}catch(e){}activaMap=null;}
+  activaMarkerMoto=null;activaMarkerDest=null;
+  toast(`🏁 ¡Entregado! Ganancia: $${gananciaReal.toFixed(2)} (comisión 5%: $${comision.toFixed(2)})`);
+  cargarGananciasMoto();
+};
+window.enviarMsgMoto=async function(){
+  const inp=gi("motoChatInput");if(!inp.value.trim()||!currentPedidoId)return;
+  await addDoc(collection(db,"pedidos",currentPedidoId,"chat"),{uid:miUid,nombre:miNombre,msg:inp.value.trim(),ts:new Date().toISOString()}).catch(()=>{});
+  inp.value="";
+};
+async function cargarGananciasMoto(){
+  const today=new Date().toISOString().slice(0,10);
+  const snap=await getDocs(collection(db,"ganancias",miUid,"historial")).catch(()=>null);
+  if(!snap)return;
+  let ganancias=0,entregas=0,comisiones=0;
+  snap.forEach(d=>{
+    const g=d.data();
+    if((g.fecha||"").startsWith(today)){
+      ganancias+=(g.gananciaNeta||g.monto||0);
+      comisiones+=(g.comision5pct||0);
+      entregas++;
+    }
+  });
+  gi("motoGanancias").innerText="$"+ganancias.toFixed(2);
+  gi("motoEntregas").innerText=entregas;
+  gi("motoComision").innerText="$"+comisiones.toFixed(2);
+}
+
+// ══ CHAT ══
+function escucharChat(pedidoId,boxId){
+  return onSnapshot(
+    query(collection(db,"pedidos",pedidoId,"chat"),orderBy("ts","asc")),
+    snap=>{
+      const box=gi(boxId);if(!box)return;box.innerHTML="";
+      snap.forEach(d=>{
+        const m=d.data();
+        const div=document.createElement("div");div.className="msg "+(m.uid===miUid?"me":"");
+        div.innerHTML=`<b>${esc(m.nombre)}</b>${esc(m.msg)}`;
+        box.appendChild(div);
+      });
+      box.scrollTop=box.scrollHeight;
+    }
+  );
+}
+
+// ══ ADMIN ══
+async function cargarDatosAdmin(){
+  const [uSnap,rSnap,pSnap]=await Promise.all([
+    getDocs(collection(db,"usuarios")),
+    getDocs(collection(db,"restaurantes")),
+    getDocs(query(collection(db,"pedidos"),where("fecha","==",new Date().toISOString().slice(0,10))))
+  ]);
+  let cli=0,motos=0;
+  uSnap.forEach(d=>{const r=d.data().rol;if(r==="cliente")cli++;if(r==="motociclista")motos++;});
+  gi("adm_clientes").innerText=cli;gi("adm_restos").innerText=rSnap.size;
+  gi("adm_motos").innerText=motos;gi("adm_pedidos").innerText=pSnap.size;
+  // Pedidos recientes
+  const allP=await getDocs(query(collection(db,"pedidos"),orderBy("timestamp","desc"),limit(30)));
+  const pedidos=[];allP.forEach(d=>pedidos.push({id:d.id,...d.data()}));
+  const colores={pendiente:"var(--yellow)",confirmado:"var(--blue)",en_camino:"var(--o)",recogido:"var(--o)",entregado:"var(--g)",cancelado:"var(--red)"};
+  gi("admPedidos").innerHTML=pedidos.map(p=>`
+    <div style="background:#111;border-radius:10px;padding:10px;margin-bottom:8px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        <div style="font-size:13px;font-weight:700;">${esc(p.restoNombre)} → ${esc(p.clienteNombre)}</div>
+        <span style="font-size:11px;color:${colores[p.estado]||"#fff"};font-weight:700;">${p.estado}</span>
+      </div>
+      <div style="font-size:12px;color:var(--sub);">Total: $${p.total?.toFixed(2)||"0"} · Delivery: $${p.deliveryFee?.toFixed(2)||"0.75"} · ${(p.timestamp||"").slice(0,16).replace("T"," ")}</div>
+      ${p.motoNombre?`<div style="font-size:11px;color:var(--g);">🛵 ${esc(p.motoNombre)}</div>`:""}
+    </div>
+  `).join("")||"<div style='color:var(--sub);text-align:center;padding:16px;'>Sin pedidos</div>";
+  // Restaurantes
+  const restos=[];rSnap.forEach(d=>restos.push({id:d.id,...d.data()}));
+  gi("admRestos").innerHTML=restos.map(r=>`
+    <div style="background:#111;border-radius:10px;padding:10px;margin-bottom:8px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        <div>
+          <div style="font-weight:700;">${esc(r.nombre)}</div>
+          <div style="font-size:11px;color:var(--sub);">${esc(r.categoria||"")} · ${esc(r.tipoPersona==="juridica"?"Jurídica":"Natural")} · ${esc(r.emailNegocio||r.email||"")}</div>
+          ${r.representante?`<div style="font-size:11px;color:var(--sub);">Rep: ${esc(r.representante)}</div>`:""}
+          <div style="font-size:11px;color:var(--sub);">Cuota: $${CUOTA_MENSUAL_RESTO}/mes · ${r.activo?"🟢 Activo":"🔴 Inactivo"}</div>
+        </div>
+        <button class="btn-xs ${r.activo?"btn-red":"btn-g"}" style="background:${r.activo?"var(--red)":"var(--g)"};color:${r.activo?"#fff":"#000"};" onclick="toggleResto('${r.id}',${r.activo})">${r.activo?"Desactivar":"Activar"}</button>
+      </div>
+    </div>
+  `).join("")||"<div style='color:var(--sub);'>Sin restaurantes</div>";
+}
+window.toggleResto=async function(id,activo){await updateDoc(doc(db,"restaurantes",id),{activo:!activo});toast(activo?"Restaurante desactivado":"Restaurante activado");cargarDatosAdmin();};
+window.buscarUsuarios=async function(){
+  const q=(gi("admBuscador").value||"").toLowerCase().trim();if(!q){gi("admResultados").innerHTML="";return;}
+  const snap=await getDocs(collection(db,"usuarios"));const list=[];
+  snap.forEach(d=>{const u=d.data();if((u.nombre||"").toLowerCase().includes(q)||(u.email||"").toLowerCase().includes(q))list.push({id:d.id,...u});});
+  const rolColor={cliente:"var(--g)",restaurante:"var(--r)",motociclista:"var(--blue)",admin:"var(--yellow)"};
+  gi("admResultados").innerHTML=list.length?list.map(u=>`
+    <div style="background:#111;border-radius:10px;padding:10px;margin-bottom:6px;display:flex;gap:10px;align-items:center;">
+      <div style="flex:1;">
+        <div style="font-size:13px;font-weight:700;">${esc(u.nombre||"?")} <span style="font-size:10px;color:${rolColor[u.rol]||"#fff"};font-weight:700;">${u.rol}</span></div>
+        <div style="font-size:11px;color:var(--sub);">${esc(u.email||"")}${u.telefono?" · "+esc(u.telefono):""}</div>
+        ${u.restoNombreComercial?`<div style="font-size:11px;color:var(--r);">🍽️ ${esc(u.restoNombreComercial)}</div>`:""}
+      </div>
+      <button class="btn-xs ${u.estado==="activo"?"btn-red":"btn-g"}" style="background:${u.estado==="activo"?"var(--red)":"var(--g)"};color:${u.estado==="activo"?"#fff":"#000"};" onclick="toggleUserEstado('${u.id}','${u.estado}')">${u.estado==="activo"?"Desactivar":"Activar"}</button>
+    </div>
+  `).join(""):"<div style='color:var(--sub);font-size:13px;'>Sin resultados</div>";
+};
+window.toggleUserEstado=async function(id,estado){
+  const nuevo=estado==="activo"?"inactivo":"activo";
+  await updateDoc(doc(db,"usuarios",id),{estado:nuevo});toast("Usuario "+nuevo);buscarUsuarios();
+};
+</script>
+</body>
+</html>
