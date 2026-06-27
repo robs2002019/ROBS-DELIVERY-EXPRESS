@@ -1,0 +1,36 @@
+{
+  "name": "ROBS DELIVERY EXPRESS",
+  "short_name": "ROBS DEL",
+  "description": "Plataforma de delivery ROBS DELIVERY EXPRESS",
+  "start_url": "/robsdelivery/index.html",
+  "scope": "/robsdelivery/",
+  "display": "standalone",
+  "background_color": "#0d0d0d",
+  "theme_color": "#00b8ff",
+  "orientation": "portrait-primary",
+  "lang": "es",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["food", "shopping", "navigation"],
+  "screenshots": [],
+  "shortcuts": [
+    {
+      "name": "Pedir delivery",
+      "short_name": "Pedir",
+      "description": "Solicitar un delivery como cliente",
+      "url": "/robsdelivery/index.html#cliente"
+    }
+  ]
+}
